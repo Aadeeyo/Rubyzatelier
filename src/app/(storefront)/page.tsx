@@ -15,7 +15,7 @@ export default async function HomePage() {
       <section className="mx-auto w-full max-w-7xl px-5 py-20 sm:px-8">
         <div className="mb-10 flex items-end justify-between">
           <h2 className="font-display text-3xl text-sand sm:text-4xl">
-            Fresh off the dye vat
+            New In
           </h2>
           <Link
             href="/shop"

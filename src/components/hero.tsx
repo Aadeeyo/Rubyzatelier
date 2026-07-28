@@ -18,7 +18,7 @@ export function Hero() {
         transition={{ duration: 0.6 }}
         className="relative font-sans text-sm uppercase tracking-[0.5em] text-chrome"
       >
-        Adire, reimagined
+        Tops · Dresses · Jeans
       </motion.p>
 
       <motion.h1
@@ -45,8 +45,9 @@ export function Hero() {
         transition={{ duration: 0.7, delay: 0.3 }}
         className="relative mt-6 max-w-xl font-sans text-lg text-sand/60"
       >
-        Hand-dyed tops, dresses and jeans for women and kids — every piece
-        carries its own one-of-one indigo, rust and coral pattern.
+        Everyday and statement pieces for women and kids, hand-picked for
+        style and quality — from wardrobe staples to one-of-a-kind tie-dye
+        finds.
       </motion.p>
 
       <motion.div

@@ -8,16 +8,14 @@ export default function AboutPage() {
         Maa rin hoho
       </h1>
       <p className="mt-6 font-sans text-xl leading-relaxed text-sand/70">
-        Rubyzatelier began with a single dye vat and a love for Adire — the
-        centuries-old art of Yoruba resist-dyeing. Every top, dress and pair
-        of jeans we make carries the same spirit: bold indigo, warm rust, and
-        patterns that never quite repeat, because no two folds of fabric ever
-        fold the same way twice.
+        Rubyzatelier curates tops, dresses and jeans for women and kids —
+        wardrobe staples and standout pieces sourced from the styles our
+        customers love, alongside our own hand-dyed Adire finds for anyone
+        after something no one else is wearing.
       </p>
       <p className="mt-4 font-sans text-xl leading-relaxed text-sand/70">
         We dress women and their little ones in pieces built to be worn
-        loudly, comfortably, and proudly. Stop scrolling — shop Adire, and
-        maa rin hoho.
+        loudly, comfortably, and proudly. Maa rin hoho.
       </p>
     </div>
   );

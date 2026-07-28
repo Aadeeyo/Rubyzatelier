@@ -23,7 +23,7 @@ const tangerine = Tangerine({
 export const metadata: Metadata = {
   title: "Rubyzatelier | Maa rin hoho",
   description:
-    "Rubyzatelier — handcrafted Adire tops, dresses and jeans for women and kids.",
+    "Rubyzatelier — tops, dresses and jeans for women and kids.",
 };
 
 export default function RootLayout({
