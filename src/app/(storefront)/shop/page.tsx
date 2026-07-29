@@ -3,7 +3,7 @@ import { ProductCard } from "@/components/product-card";
 import { CategoryFilterBar } from "@/components/category-filter-bar";
 import type { ProductCategory } from "@/generated/prisma/enums";
 
-const VALID_CATEGORIES: ProductCategory[] = ["TOP", "DRESS", "JEANS"];
+const VALID_CATEGORIES: ProductCategory[] = ["TOP", "DRESS", "JEANS", "TOP_BOTTOM"];
 
 export default async function ShopAllPage({
   searchParams,

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { Toaster } from "sonner";
 import { getAdminSession } from "@/lib/auth";
 import { logoutAdmin } from "../login/actions";
 
@@ -56,6 +57,7 @@ export default async function AdminDashboardLayout({
       </aside>
 
       <main className="flex-1 overflow-y-auto px-8 py-8">{children}</main>
+      <Toaster theme="dark" richColors position="top-right" />
     </div>
   );
 }

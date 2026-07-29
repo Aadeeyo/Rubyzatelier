@@ -42,7 +42,8 @@ export default async function ProductPage({
 
       <div>
         <p className="font-sans text-sm uppercase tracking-[0.3em] text-chrome">
-          {product.department === "WOMEN" ? "Women" : "Kids"} · {product.category.toLowerCase()}
+          {product.department === "WOMEN" ? "Women" : "Kids"} ·{" "}
+          {product.category.toLowerCase().replace("_", " + ")}
         </p>
         <h1 className="mt-2 font-display text-4xl text-sand sm:text-5xl">
           {product.name}

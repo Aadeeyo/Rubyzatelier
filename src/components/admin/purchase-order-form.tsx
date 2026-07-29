@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import { createPurchaseOrder } from "@/app/admin/(dashboard)/procurement/actions";
 
 interface VariantOption {
@@ -53,10 +54,18 @@ export function PurchaseOrderForm({
             unitCost: Math.round(parseFloat(r.unitCost || "0") * 100),
           })),
       });
-      if (!result.ok) throw new Error("Could not create purchase order");
+      if (!result.ok) {
+        toast.error(result.error);
+        setError(result.error);
+        setSaving(false);
+        return;
+      }
+      toast.success("Purchase order created");
       router.push(`/admin/procurement/${result.id}`);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong");
+      const message = err instanceof Error ? err.message : "Something went wrong";
+      toast.error(message);
+      setError(message);
       setSaving(false);
     }
   }

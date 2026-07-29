@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import { createSupplier } from "@/app/admin/(dashboard)/suppliers/actions";
 
 export function NewSupplierForm() {
@@ -20,8 +21,15 @@ export function NewSupplierForm() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setSaving(true);
-    await createSupplier(form);
+    const result = await createSupplier(form);
     setSaving(false);
+
+    if (!result.ok) {
+      toast.error(result.error);
+      return;
+    }
+
+    toast.success(`${form.name} added`);
     setOpen(false);
     setForm({ name: "", contactName: "", email: "", phone: "", address: "", notes: "" });
     router.refresh();

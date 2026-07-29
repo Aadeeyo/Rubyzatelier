@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { toast } from "sonner";
 import { adjustInventory } from "@/app/admin/(dashboard)/inventory/actions";
 
 export function InventoryRow({
@@ -29,8 +30,14 @@ export function InventoryRow({
 
   async function save() {
     setSaving(true);
-    await adjustInventory({ variantId, quantity, reorderAt });
+    const result = await adjustInventory({ variantId, quantity, reorderAt });
     setSaving(false);
+
+    if (!result.ok) {
+      toast.error(result.error);
+      return;
+    }
+    toast.success(`${productName} stock updated`);
     setDirty(false);
   }
 

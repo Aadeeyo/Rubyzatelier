@@ -9,7 +9,7 @@ const DEPARTMENT_MAP: Record<string, Department> = {
   kids: "KIDS",
 };
 
-const VALID_CATEGORIES: ProductCategory[] = ["TOP", "DRESS", "JEANS"];
+const VALID_CATEGORIES: ProductCategory[] = ["TOP", "DRESS", "JEANS", "TOP_BOTTOM"];
 
 export default async function DepartmentShopPage({
   params,

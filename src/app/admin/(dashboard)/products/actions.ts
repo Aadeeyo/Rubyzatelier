@@ -5,6 +5,34 @@ import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { requireAdminSession } from "@/lib/auth";
 import { slugify } from "@/lib/utils";
+import { isSupportedImageType, uploadProductImage } from "@/lib/storage";
+import { friendlyPrismaError } from "@/lib/errors";
+
+const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
+
+export async function uploadImage(formData: FormData) {
+  await requireAdminSession();
+
+  const file = formData.get("file");
+  if (!(file instanceof File)) {
+    return { ok: false as const, error: "No file provided." };
+  }
+  if (!isSupportedImageType(file.type)) {
+    return { ok: false as const, error: "Please upload a JPG, PNG, WEBP, GIF or SVG image." };
+  }
+  if (file.size > MAX_IMAGE_BYTES) {
+    return { ok: false as const, error: "Image must be under 5MB." };
+  }
+
+  try {
+    const buffer = await file.arrayBuffer();
+    const url = await uploadProductImage(buffer, file.type);
+    return { ok: true as const, url };
+  } catch (err) {
+    console.error("Image upload failed:", err);
+    return { ok: false as const, error: "Could not upload image. Please try again." };
+  }
+}
 
 const variantSchema = z.object({
   size: z.string().min(1),
@@ -19,7 +47,7 @@ const productSchema = z.object({
   slug: z.string().min(2).optional(),
   description: z.string().min(1),
   department: z.enum(["WOMEN", "KIDS"]),
-  category: z.enum(["TOP", "DRESS", "JEANS"]),
+  category: z.enum(["TOP", "DRESS", "JEANS", "TOP_BOTTOM"]),
   basePrice: z.number().int().positive(),
   imageUrl: z.string().min(1),
   isPublished: z.boolean(),
@@ -34,34 +62,46 @@ export async function createProduct(input: ProductInput) {
   const data = productSchema.parse(input);
   const slug = slugify(data.slug || data.name);
 
-  const product = await prisma.product.create({
-    data: {
-      name: data.name,
-      slug,
-      description: data.description,
-      department: data.department,
-      category: data.category,
-      basePrice: data.basePrice,
-      isPublished: data.isPublished,
-      isFeatured: data.isFeatured,
-      images: { create: [{ url: data.imageUrl, position: 0 }] },
-      variants: {
-        create: data.variants.map((v) => ({
-          size: v.size,
-          color: v.color,
-          sku: v.sku,
-          priceOverride: v.priceOverride ?? null,
-          inventory: { create: { quantity: v.quantity } },
-        })),
-      },
-    },
-  });
+  const existing = await prisma.product.findUnique({ where: { slug } });
+  if (existing) {
+    return {
+      ok: false as const,
+      error: `A product named "${data.name}" already exists.`,
+    };
+  }
 
-  revalidatePath("/admin/products");
-  revalidatePath("/admin/inventory");
-  revalidatePath("/shop");
-  revalidatePath("/");
-  return { ok: true, id: product.id };
+  try {
+    const product = await prisma.product.create({
+      data: {
+        name: data.name,
+        slug,
+        description: data.description,
+        department: data.department,
+        category: data.category,
+        basePrice: data.basePrice,
+        isPublished: data.isPublished,
+        isFeatured: data.isFeatured,
+        images: { create: [{ url: data.imageUrl, position: 0 }] },
+        variants: {
+          create: data.variants.map((v) => ({
+            size: v.size,
+            color: v.color,
+            sku: v.sku,
+            priceOverride: v.priceOverride ?? null,
+            inventory: { create: { quantity: v.quantity } },
+          })),
+        },
+      },
+    });
+
+    revalidatePath("/admin/products");
+    revalidatePath("/admin/inventory");
+    revalidatePath("/shop");
+    revalidatePath("/");
+    return { ok: true as const, id: product.id };
+  } catch (err) {
+    return { ok: false as const, error: friendlyPrismaError(err, "Could not create product.") };
+  }
 }
 
 const coreUpdateSchema = productSchema.omit({ variants: true });
@@ -74,51 +114,67 @@ export async function updateProductCore(
   const data = coreUpdateSchema.parse(input);
   const slug = slugify(data.slug || data.name);
 
-  await prisma.product.update({
-    where: { id },
-    data: {
-      name: data.name,
-      slug,
-      description: data.description,
-      department: data.department,
-      category: data.category,
-      basePrice: data.basePrice,
-      isPublished: data.isPublished,
-      isFeatured: data.isFeatured,
-      images: {
-        deleteMany: {},
-        create: [{ url: data.imageUrl, position: 0 }],
-      },
-    },
-  });
+  const existing = await prisma.product.findUnique({ where: { slug } });
+  if (existing && existing.id !== id) {
+    return {
+      ok: false as const,
+      error: `A product named "${data.name}" already exists.`,
+    };
+  }
 
-  revalidatePath("/admin/products");
-  revalidatePath(`/admin/products/${id}`);
-  revalidatePath("/shop");
-  revalidatePath("/");
-  return { ok: true };
+  try {
+    await prisma.product.update({
+      where: { id },
+      data: {
+        name: data.name,
+        slug,
+        description: data.description,
+        department: data.department,
+        category: data.category,
+        basePrice: data.basePrice,
+        isPublished: data.isPublished,
+        isFeatured: data.isFeatured,
+        images: {
+          deleteMany: {},
+          create: [{ url: data.imageUrl, position: 0 }],
+        },
+      },
+    });
+
+    revalidatePath("/admin/products");
+    revalidatePath(`/admin/products/${id}`);
+    revalidatePath("/shop");
+    revalidatePath("/");
+    return { ok: true as const };
+  } catch (err) {
+    return { ok: false as const, error: friendlyPrismaError(err, "Could not save changes.") };
+  }
 }
 
 export async function addVariant(productId: string, input: z.infer<typeof variantSchema>) {
   await requireAdminSession();
   const data = variantSchema.parse(input);
 
-  await prisma.productVariant.create({
-    data: {
-      productId,
-      size: data.size,
-      color: data.color,
-      sku: data.sku,
-      priceOverride: data.priceOverride ?? null,
-      inventory: { create: { quantity: data.quantity } },
-    },
-  });
+  try {
+    await prisma.productVariant.create({
+      data: {
+        productId,
+        size: data.size,
+        color: data.color,
+        sku: data.sku,
+        priceOverride: data.priceOverride ?? null,
+        inventory: { create: { quantity: data.quantity } },
+      },
+    });
 
-  revalidatePath(`/admin/products/${productId}`);
-  revalidatePath("/admin/inventory");
-  revalidatePath("/shop");
-  revalidatePath("/");
-  return { ok: true };
+    revalidatePath(`/admin/products/${productId}`);
+    revalidatePath("/admin/inventory");
+    revalidatePath("/shop");
+    revalidatePath("/");
+    return { ok: true as const };
+  } catch (err) {
+    return { ok: false as const, error: friendlyPrismaError(err, "Could not add variant.") };
+  }
 }
 
 export async function updateVariantDetails(

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import { receiveStock } from "@/app/admin/(dashboard)/procurement/actions";
 
 export function ReceiveStockRow({
@@ -26,8 +27,14 @@ export function ReceiveStockRow({
     const qty = parseInt(amount || "0", 10);
     if (qty <= 0) return;
     setSaving(true);
-    await receiveStock({ purchaseOrderItemId: itemId, quantity: qty });
+    const result = await receiveStock({ purchaseOrderItemId: itemId, quantity: qty });
     setSaving(false);
+
+    if (!result.ok) {
+      toast.error(result.error);
+      return;
+    }
+    toast.success(`Received ${qty} × ${productLabel}`);
     router.refresh();
   }
 

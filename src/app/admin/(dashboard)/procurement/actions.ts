@@ -4,6 +4,7 @@ import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { requireAdminSession } from "@/lib/auth";
+import { friendlyPrismaError } from "@/lib/errors";
 
 const createSchema = z.object({
   supplierId: z.string(),
@@ -24,25 +25,32 @@ export async function createPurchaseOrder(input: z.infer<typeof createSchema>) {
   const session = await requireAdminSession();
   const data = createSchema.parse(input);
 
-  const po = await prisma.purchaseOrder.create({
-    data: {
-      supplierId: data.supplierId,
-      createdById: session.sub,
-      expectedAt: data.expectedAt ? new Date(data.expectedAt) : null,
-      notes: data.notes || null,
-      status: "DRAFT",
-      items: {
-        create: data.items.map((i) => ({
-          variantId: i.variantId,
-          quantityOrdered: i.quantityOrdered,
-          unitCost: i.unitCost,
-        })),
+  try {
+    const po = await prisma.purchaseOrder.create({
+      data: {
+        supplierId: data.supplierId,
+        createdById: session.sub,
+        expectedAt: data.expectedAt ? new Date(data.expectedAt) : null,
+        notes: data.notes || null,
+        status: "DRAFT",
+        items: {
+          create: data.items.map((i) => ({
+            variantId: i.variantId,
+            quantityOrdered: i.quantityOrdered,
+            unitCost: i.unitCost,
+          })),
+        },
       },
-    },
-  });
+    });
 
-  revalidatePath("/admin/procurement");
-  return { ok: true, id: po.id };
+    revalidatePath("/admin/procurement");
+    return { ok: true as const, id: po.id };
+  } catch (err) {
+    return {
+      ok: false as const,
+      error: friendlyPrismaError(err, "Could not create purchase order."),
+    };
+  }
 }
 
 export async function setPurchaseOrderStatus(
@@ -50,10 +58,17 @@ export async function setPurchaseOrderStatus(
   status: "DRAFT" | "ORDERED" | "CANCELLED",
 ) {
   await requireAdminSession();
-  await prisma.purchaseOrder.update({ where: { id }, data: { status } });
-  revalidatePath(`/admin/procurement/${id}`);
-  revalidatePath("/admin/procurement");
-  return { ok: true };
+  try {
+    await prisma.purchaseOrder.update({ where: { id }, data: { status } });
+    revalidatePath(`/admin/procurement/${id}`);
+    revalidatePath("/admin/procurement");
+    return { ok: true as const };
+  } catch (err) {
+    return {
+      ok: false as const,
+      error: friendlyPrismaError(err, "Could not update purchase order status."),
+    };
+  }
 }
 
 const receiveSchema = z.object({
@@ -69,44 +84,48 @@ export async function receiveStock(input: z.infer<typeof receiveSchema>) {
     where: { id: data.purchaseOrderItemId },
     include: { purchaseOrder: { include: { items: true } } },
   });
-  if (!item) throw new Error("Purchase order item not found");
+  if (!item) return { ok: false as const, error: "Purchase order item not found." };
 
   const newReceived = Math.min(
     item.quantityReceived + data.quantity,
     item.quantityOrdered,
   );
 
-  await prisma.$transaction([
-    prisma.purchaseOrderItem.update({
-      where: { id: item.id },
-      data: { quantityReceived: newReceived },
-    }),
-    prisma.inventory.upsert({
-      where: { variantId: item.variantId },
-      update: { quantity: { increment: data.quantity } },
-      create: { variantId: item.variantId, quantity: data.quantity },
-    }),
-  ]);
+  try {
+    await prisma.$transaction([
+      prisma.purchaseOrderItem.update({
+        where: { id: item.id },
+        data: { quantityReceived: newReceived },
+      }),
+      prisma.inventory.upsert({
+        where: { variantId: item.variantId },
+        update: { quantity: { increment: data.quantity } },
+        create: { variantId: item.variantId, quantity: data.quantity },
+      }),
+    ]);
 
-  const siblings = item.purchaseOrder.items.map((i) =>
-    i.id === item.id ? { ...i, quantityReceived: newReceived } : i,
-  );
-  const allReceived = siblings.every((i) => i.quantityReceived >= i.quantityOrdered);
-  const anyReceived = siblings.some((i) => i.quantityReceived > 0);
+    const siblings = item.purchaseOrder.items.map((i) =>
+      i.id === item.id ? { ...i, quantityReceived: newReceived } : i,
+    );
+    const allReceived = siblings.every((i) => i.quantityReceived >= i.quantityOrdered);
+    const anyReceived = siblings.some((i) => i.quantityReceived > 0);
 
-  await prisma.purchaseOrder.update({
-    where: { id: item.purchaseOrderId },
-    data: {
-      status: allReceived ? "RECEIVED" : anyReceived ? "PARTIALLY_RECEIVED" : undefined,
-      receivedAt: allReceived ? new Date() : undefined,
-    },
-  });
+    await prisma.purchaseOrder.update({
+      where: { id: item.purchaseOrderId },
+      data: {
+        status: allReceived ? "RECEIVED" : anyReceived ? "PARTIALLY_RECEIVED" : undefined,
+        receivedAt: allReceived ? new Date() : undefined,
+      },
+    });
 
-  revalidatePath(`/admin/procurement/${item.purchaseOrderId}`);
-  revalidatePath("/admin/procurement");
-  revalidatePath("/admin/inventory");
-  revalidatePath("/admin");
-  revalidatePath("/shop");
-  revalidatePath("/");
-  return { ok: true };
+    revalidatePath(`/admin/procurement/${item.purchaseOrderId}`);
+    revalidatePath("/admin/procurement");
+    revalidatePath("/admin/inventory");
+    revalidatePath("/admin");
+    revalidatePath("/shop");
+    revalidatePath("/");
+    return { ok: true as const };
+  } catch (err) {
+    return { ok: false as const, error: friendlyPrismaError(err, "Could not receive stock.") };
+  }
 }

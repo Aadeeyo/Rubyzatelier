@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import { setPurchaseOrderStatus } from "@/app/admin/(dashboard)/procurement/actions";
 
 export function PurchaseOrderStatusActions({
@@ -16,8 +17,14 @@ export function PurchaseOrderStatusActions({
 
   async function update(next: "ORDERED" | "CANCELLED") {
     setPending(true);
-    await setPurchaseOrderStatus(id, next);
+    const result = await setPurchaseOrderStatus(id, next);
     setPending(false);
+
+    if (!result.ok) {
+      toast.error(result.error);
+      return;
+    }
+    toast.success(next === "ORDERED" ? "Purchase order marked as ordered" : "Purchase order cancelled");
     router.refresh();
   }
 

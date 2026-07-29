@@ -6,6 +6,7 @@ const CATEGORIES: { value: ProductCategory; label: string }[] = [
   { value: "TOP", label: "Tops" },
   { value: "DRESS", label: "Dresses" },
   { value: "JEANS", label: "Jeans" },
+  { value: "TOP_BOTTOM", label: "Top + Bottom" },
 ];
 
 export function CategoryFilterBar({

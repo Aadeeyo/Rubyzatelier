@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import { updateOrderStatus } from "@/app/admin/(dashboard)/orders/actions";
 
 const STATUSES = [
@@ -26,10 +27,18 @@ export function OrderStatusControl({
   const [saving, setSaving] = useState(false);
 
   async function handleChange(next: string) {
+    const previous = status;
     setStatus(next);
     setSaving(true);
-    await updateOrderStatus({ orderId, status: next as (typeof STATUSES)[number] });
+    const result = await updateOrderStatus({ orderId, status: next as (typeof STATUSES)[number] });
     setSaving(false);
+
+    if (!result.ok) {
+      setStatus(previous);
+      toast.error(result.error);
+      return;
+    }
+    toast.success(`Order marked ${next.replaceAll("_", " ").toLowerCase()}`);
     router.refresh();
   }
 

@@ -2,7 +2,16 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { createProduct, updateProductCore, addVariant } from "@/app/admin/(dashboard)/products/actions";
+import { toast } from "sonner";
+import { createProduct, updateProductCore, addVariant, uploadImage } from "@/app/admin/(dashboard)/products/actions";
+import type { ProductCategory } from "@/generated/prisma/enums";
+
+const CATEGORY_OPTIONS: { value: ProductCategory; label: string }[] = [
+  { value: "TOP", label: "Top" },
+  { value: "DRESS", label: "Dress" },
+  { value: "JEANS", label: "Jeans" },
+  { value: "TOP_BOTTOM", label: "Top + Bottom" },
+];
 
 const PLACEHOLDER_IMAGES = Array.from(
   { length: 8 },
@@ -31,7 +40,7 @@ export function ProductForm({
     slug: string;
     description: string;
     department: "WOMEN" | "KIDS";
-    category: "TOP" | "DRESS" | "JEANS";
+    category: ProductCategory;
     basePrice: number;
     imageUrl: string;
     isPublished: boolean;
@@ -43,11 +52,13 @@ export function ProductForm({
   const [name, setName] = useState(initial?.name ?? "");
   const [description, setDescription] = useState(initial?.description ?? "");
   const [department, setDepartment] = useState<"WOMEN" | "KIDS">(initial?.department ?? "WOMEN");
-  const [category, setCategory] = useState<"TOP" | "DRESS" | "JEANS">(initial?.category ?? "TOP");
+  const [category, setCategory] = useState<ProductCategory>(initial?.category ?? "TOP");
   const [basePrice, setBasePrice] = useState(
     initial ? (initial.basePrice / 100).toString() : "",
   );
   const [imageUrl, setImageUrl] = useState(initial?.imageUrl ?? PLACEHOLDER_IMAGES[0]);
+  const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
   const [isPublished, setIsPublished] = useState(initial?.isPublished ?? true);
   const [isFeatured, setIsFeatured] = useState(initial?.isFeatured ?? false);
   const [variants, setVariants] = useState<VariantRow[]>(
@@ -57,6 +68,29 @@ export function ProductForm({
   );
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  async function handleFileUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    e.target.value = "";
+    if (!file) return;
+
+    setUploading(true);
+    setUploadError(null);
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      const result = await uploadImage(formData);
+      if (!result.ok) {
+        setUploadError(result.error);
+        return;
+      }
+      setImageUrl(result.url);
+    } catch {
+      setUploadError("Could not upload image. Please try again.");
+    } finally {
+      setUploading(false);
+    }
+  }
 
   function addVariantRow() {
     setVariants((v) => [...v, { size: "", color: "", sku: "", priceOverride: "", quantity: "0" }]);
@@ -96,25 +130,45 @@ export function ProductForm({
           quantity: parseInt(v.quantity || "0", 10),
         }));
         const result = await createProduct({ ...core, variants: parsedVariants });
-        if (!result.ok) throw new Error("Could not create product");
+        if (!result.ok) {
+          toast.error(result.error);
+          setError(result.error);
+          return;
+        }
+        toast.success(`${name} created`);
         router.push(`/admin/products/${result.id}`);
       } else if (productId) {
-        await updateProductCore(productId, core);
+        const coreResult = await updateProductCore(productId, core);
+        if (!coreResult.ok) {
+          toast.error(coreResult.error);
+          setError(coreResult.error);
+          return;
+        }
+
         for (const row of variants) {
           if (!row.size || !row.color || !row.sku) continue;
-          await addVariant(productId, {
+          const variantResult = await addVariant(productId, {
             size: row.size,
             color: row.color,
             sku: row.sku,
             priceOverride: row.priceOverride ? Math.round(parseFloat(row.priceOverride) * 100) : null,
             quantity: parseInt(row.quantity || "0", 10),
           });
+          if (!variantResult.ok) {
+            toast.error(variantResult.error);
+            setError(variantResult.error);
+            return;
+          }
         }
+
+        toast.success("Changes saved");
         router.refresh();
         setVariants([]);
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong");
+      const message = err instanceof Error ? err.message : "Something went wrong";
+      toast.error(message);
+      setError(message);
     } finally {
       setSaving(false);
     }
@@ -161,12 +215,14 @@ export function ProductForm({
           Category
           <select
             value={category}
-            onChange={(e) => setCategory(e.target.value as "TOP" | "DRESS" | "JEANS")}
+            onChange={(e) => setCategory(e.target.value as ProductCategory)}
             className="rounded-lg border border-white/15 bg-ink-elevated px-4 py-2 text-sand outline-none focus:border-coral"
           >
-            <option value="TOP">Top</option>
-            <option value="DRESS">Dress</option>
-            <option value="JEANS">Jeans</option>
+            {CATEGORY_OPTIONS.map((c) => (
+              <option key={c.value} value={c.value}>
+                {c.label}
+              </option>
+            ))}
           </select>
         </label>
       </div>
@@ -184,6 +240,25 @@ export function ProductForm({
 
       <div>
         <span className="font-sans text-sand/70">Image</span>
+
+        <div className="mt-2 flex items-center gap-4">
+          <div className="h-20 w-20 flex-shrink-0 overflow-hidden rounded-lg border border-white/15 bg-ink-elevated">
+            <img src={imageUrl} alt="" className="h-full w-full object-cover" />
+          </div>
+          <label className="cursor-pointer rounded-full border border-white/15 px-5 py-2 font-sans text-sand/80 hover:border-coral hover:text-coral">
+            {uploading ? "Uploading…" : "Upload photo"}
+            <input
+              type="file"
+              accept="image/jpeg,image/png,image/webp,image/gif,image/svg+xml"
+              className="hidden"
+              disabled={uploading}
+              onChange={handleFileUpload}
+            />
+          </label>
+        </div>
+        {uploadError && <p className="mt-2 font-sans text-sm text-coral">{uploadError}</p>}
+
+        <p className="mt-4 font-sans text-sm text-sand/50">Or pick a placeholder</p>
         <div className="mt-2 flex flex-wrap gap-3">
           {PLACEHOLDER_IMAGES.map((img) => (
             <button

@@ -42,7 +42,7 @@ export default async function AdminProductsPage() {
                   </Link>
                 </td>
                 <td className="px-5 py-3 text-sand/70">{p.department}</td>
-                <td className="px-5 py-3 text-sand/70">{p.category}</td>
+                <td className="px-5 py-3 text-sand/70">{p.category.replace("_", " + ")}</td>
                 <td className="px-5 py-3 text-sand/70">{formatNaira(p.basePrice)}</td>
                 <td className="px-5 py-3 text-sand/70">{productTotalStock(p)}</td>
                 <td className="px-5 py-3">
