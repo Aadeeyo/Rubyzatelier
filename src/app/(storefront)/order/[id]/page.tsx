@@ -48,6 +48,16 @@ export default async function OrderConfirmationPage({
         </p>
       </div>
 
+      <div className="mt-6 rounded-xl border border-white/10 bg-ink-soft p-6">
+        <h2 className="font-display text-xl text-sand">Delivery</h2>
+        <p className="mt-2 font-sans text-sm text-sand/60">
+          We&apos;ll arrange delivery once your payment is confirmed and
+          email you the delivery cost and courier details. The delivery fee
+          is paid directly to the delivery partner on arrival — it&apos;s
+          not part of the amount above.
+        </p>
+      </div>
+
       <div className="mt-8">
         <h2 className="font-display text-xl text-sand">Items</h2>
         <div className="mt-3 flex flex-col divide-y divide-white/10">

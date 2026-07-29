@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { formatNaira } from "@/lib/utils";
 import { OrderStatusControl } from "@/components/admin/order-status-control";
+import { DispatchForm } from "@/components/admin/dispatch-form";
 
 export default async function AdminOrderDetailPage({
   params,
@@ -17,6 +18,8 @@ export default async function AdminOrderDetailPage({
     },
   });
   if (!order) notFound();
+
+  const isDispatched = order.dispatchedAt !== null;
 
   return (
     <div>
@@ -67,6 +70,41 @@ export default async function AdminOrderDetailPage({
         </div>
       </div>
 
+      <div className="mt-8 rounded-xl border border-white/10 bg-ink-soft p-6">
+        <h2 className="font-display text-xl text-sand">Delivery</h2>
+        {isDispatched ? (
+          <div className="mt-3 font-sans text-sand/70">
+            <dl className="grid grid-cols-2 gap-y-2 sm:max-w-md">
+              <dt>Delivery cost</dt>
+              <dd className="text-sand">{formatNaira(order.deliveryCost ?? 0)}</dd>
+              <dt>Courier</dt>
+              <dd className="text-sand">{order.courierName ?? "—"}</dd>
+              <dt>Tracking</dt>
+              <dd className="text-sand">{order.trackingInfo ?? "—"}</dd>
+              <dt>Dispatched</dt>
+              <dd className="text-sand">{order.dispatchedAt?.toLocaleString()}</dd>
+            </dl>
+            {order.dispatchNotes && (
+              <p className="mt-3 italic text-sand/60">&ldquo;{order.dispatchNotes}&rdquo;</p>
+            )}
+            <p className="mt-3 font-sans text-sm text-sand/40">
+              {order.dispatchEmailSentAt
+                ? `Customer notified by email on ${order.dispatchEmailSentAt.toLocaleString()}.`
+                : "The dispatch email was not sent — check your Resend configuration."}
+            </p>
+          </div>
+        ) : (
+          <>
+            <p className="mt-2 mb-4 font-sans text-sm text-sand/50">
+              Set the delivery cost and courier details, then notify the
+              customer by email. The delivery fee is collected by the
+              courier on arrival, not through Zenta.
+            </p>
+            <DispatchForm orderId={order.id} />
+          </>
+        )}
+      </div>
+
       <div className="mt-8 overflow-x-auto rounded-xl border border-white/10 bg-ink-soft">
         <table className="w-full font-sans text-left">
           <thead>
@@ -96,11 +134,14 @@ export default async function AdminOrderDetailPage({
 
       <div className="mt-4 flex justify-end gap-8 font-sans text-sand/70">
         <div className="text-right">
-          <p>Subtotal: {formatNaira(order.subtotal)}</p>
-          <p>Shipping: {formatNaira(order.shippingFee)}</p>
-          <p className="mt-1 font-display text-xl text-sand">
+          <p className="font-display text-xl text-sand">
             Total: {formatNaira(order.total)}
           </p>
+          {isDispatched && (
+            <p className="text-sm text-sand/50">
+              + {formatNaira(order.deliveryCost ?? 0)} delivery (paid on arrival)
+            </p>
+          )}
         </div>
       </div>
     </div>

@@ -9,8 +9,9 @@ const STATUSES = [
   "PENDING_PAYMENT",
   "PAID",
   "PROCESSING",
-  "SHIPPED",
+  "DISPATCHED",
   "DELIVERED",
+  "PICKED",
   "CANCELLED",
   "REFUNDED",
 ] as const;

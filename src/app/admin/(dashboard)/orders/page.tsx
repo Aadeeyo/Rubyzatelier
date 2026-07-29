@@ -7,8 +7,9 @@ const STATUS_COLORS: Record<string, string> = {
   PENDING_PAYMENT: "bg-rust/30 text-sand",
   PAID: "bg-indigo/30 text-sand",
   PROCESSING: "bg-indigo/30 text-sand",
-  SHIPPED: "bg-chrome/20 text-sand",
+  DISPATCHED: "bg-chrome/20 text-sand",
   DELIVERED: "bg-green-900/30 text-green-400",
+  PICKED: "bg-green-900/30 text-green-400",
   CANCELLED: "bg-white/5 text-sand/30",
   REFUNDED: "bg-white/5 text-sand/30",
 };
@@ -17,8 +18,9 @@ const tabs: OrderStatus[] = [
   "PENDING_PAYMENT",
   "PAID",
   "PROCESSING",
-  "SHIPPED",
+  "DISPATCHED",
   "DELIVERED",
+  "PICKED",
   "CANCELLED",
 ];
 

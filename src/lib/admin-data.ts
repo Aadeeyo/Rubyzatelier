@@ -1,13 +1,16 @@
 import { prisma } from "@/lib/prisma";
 
 export async function getDashboardStats() {
-  const [productCount, allInventory, pendingOrders, paidOrders, openPOs] =
+  const [productCount, allInventory, pendingOrders, pendingDeliveryOrders, paidOrders, openPOs] =
     await Promise.all([
       prisma.product.count(),
       prisma.inventory.findMany({
         include: { variant: { include: { product: true } } },
       }),
       prisma.order.count({ where: { status: "PENDING_PAYMENT" } }),
+      prisma.order.count({
+        where: { status: { in: ["PAID", "PROCESSING", "DISPATCHED"] } },
+      }),
       prisma.order.findMany({ where: { status: { not: "PENDING_PAYMENT" } } }),
       prisma.purchaseOrder.count({
         where: { status: { in: ["DRAFT", "ORDERED", "PARTIALLY_RECEIVED"] } },
@@ -23,6 +26,7 @@ export async function getDashboardStats() {
     productCount,
     lowStockVariants,
     pendingOrders,
+    pendingDeliveryOrders,
     revenue,
     openPOs,
   };

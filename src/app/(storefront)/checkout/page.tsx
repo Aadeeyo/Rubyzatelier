@@ -24,8 +24,7 @@ export default function CheckoutPage() {
   const lines = useCartStore((s) => s.lines);
   const clear = useCartStore((s) => s.clear);
   const subtotal = cartSubtotal(lines);
-  const shippingFee = subtotal > 0 ? 2000 : 0;
-  const total = subtotal + shippingFee;
+  const total = subtotal;
 
   const [form, setForm] = useState({
     fullName: "",
@@ -144,7 +143,10 @@ export default function CheckoutPage() {
           {submitting ? "Placing order…" : `Pay ${formatNaira(total)} via Zenta`}
         </button>
         <p className="text-center font-sans text-sm text-sand/40">
-          You&apos;ll receive a Zenta virtual account number to complete payment.
+          You&apos;ll receive a Zenta virtual account number to complete
+          payment. Delivery is arranged after payment — we&apos;ll email you
+          the delivery cost and courier details, payable directly to the
+          delivery partner on arrival.
         </p>
       </form>
 
@@ -171,14 +173,14 @@ export default function CheckoutPage() {
           <span>Subtotal</span>
           <span>{formatNaira(subtotal)}</span>
         </div>
-        <div className="mt-1 flex justify-between font-sans text-base text-sand/70">
-          <span>Shipping</span>
-          <span>{formatNaira(shippingFee)}</span>
-        </div>
         <div className="mt-3 flex justify-between border-t border-white/10 pt-3 font-display text-xl text-sand">
           <span>Total</span>
           <span>{formatNaira(total)}</span>
         </div>
+        <p className="mt-3 font-sans text-sm text-sand/50">
+          Delivery fee not included — paid to the delivery partner on
+          arrival, once we confirm your delivery cost by email.
+        </p>
       </div>
     </div>
   );

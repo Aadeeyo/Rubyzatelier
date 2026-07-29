@@ -56,8 +56,10 @@ export async function placeOrder(input: CheckoutInput): Promise<CheckoutResult> 
         (sum, l) => sum + l.unitPrice * l.quantity,
         0,
       );
-      const shippingFee = subtotal > 0 ? 2000 : 0;
-      const total = subtotal + shippingFee;
+      // Delivery cost is arranged and priced by admin after payment, then
+      // paid directly to the delivery partner on arrival - it's not part
+      // of the amount collected up front via Zenta.
+      const total = subtotal;
 
       const address = await tx.address.create({
         data: {
@@ -82,7 +84,6 @@ export async function placeOrder(input: CheckoutInput): Promise<CheckoutResult> 
           addressId: address.id,
           customerId: address.customerId,
           subtotal,
-          shippingFee,
           total,
           status: "PENDING_PAYMENT",
           items: {

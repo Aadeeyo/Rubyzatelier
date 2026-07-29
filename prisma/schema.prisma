@@ -23,8 +23,9 @@ enum OrderStatus {
   PENDING_PAYMENT
   PAID
   PROCESSING
-  SHIPPED
+  DISPATCHED
   DELIVERED
+  PICKED
   CANCELLED
   REFUNDED
 }
@@ -176,12 +177,21 @@ model Order {
   items         OrderItem[]
   status        OrderStatus @default(PENDING_PAYMENT)
   subtotal      Int
-  shippingFee   Int         @default(0)
   total         Int
   paymentRef    String?
   paymentMethod String      @default("zenta")
   virtualAccountNumber String?
   virtualAccountBank   String?
+
+  // Delivery is arranged and priced after payment, then paid in cash/transfer
+  // to the delivery partner on arrival - not collected up front via Zenta.
+  deliveryCost        Int?
+  courierName         String?
+  trackingInfo        String?
+  dispatchNotes       String?
+  dispatchedAt        DateTime?
+  dispatchEmailSentAt DateTime?
+
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
 }

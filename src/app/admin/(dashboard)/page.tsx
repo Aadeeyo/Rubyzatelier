@@ -9,11 +9,16 @@ export default async function AdminDashboardPage() {
     <div>
       <h1 className="font-display text-3xl text-sand">Dashboard</h1>
 
-      <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
         <StatCard label="Products" value={stats.productCount.toString()} />
         <StatCard
           label="Pending payment"
           value={stats.pendingOrders.toString()}
+          accent
+        />
+        <StatCard
+          label="Pending delivery"
+          value={stats.pendingDeliveryOrders.toString()}
           accent
         />
         <StatCard label="Revenue (paid orders)" value={formatNaira(stats.revenue)} />

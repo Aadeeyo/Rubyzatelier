@@ -6,13 +6,15 @@ import { prisma } from "@/lib/prisma";
 import { requireAdminSession } from "@/lib/auth";
 import { friendlyActionError } from "@/lib/errors";
 import { revalidateStorefront } from "@/lib/revalidate";
+import { sendDispatchEmail } from "@/lib/email";
 
 const statuses = [
   "PENDING_PAYMENT",
   "PAID",
   "PROCESSING",
-  "SHIPPED",
+  "DISPATCHED",
   "DELIVERED",
+  "PICKED",
   "CANCELLED",
   "REFUNDED",
 ] as const;
@@ -65,5 +67,80 @@ export async function updateOrderStatus(input: z.infer<typeof schema>) {
     return { ok: true as const };
   } catch (err) {
     return { ok: false as const, error: friendlyActionError(err, "Could not update order status.") };
+  }
+}
+
+const dispatchSchema = z.object({
+  orderId: z.string(),
+  deliveryCost: z.number().int().min(0),
+  courierName: z.string().optional(),
+  trackingInfo: z.string().optional(),
+  dispatchNotes: z.string().optional(),
+});
+
+export async function dispatchOrder(input: z.infer<typeof dispatchSchema>) {
+  await requireAdminSession();
+  const parsed = dispatchSchema.safeParse(input);
+  if (!parsed.success) {
+    return { ok: false as const, error: friendlyActionError(parsed.error, "Invalid dispatch details.") };
+  }
+  const data = parsed.data;
+
+  const order = await prisma.order.findUnique({
+    where: { id: data.orderId },
+    include: {
+      items: { include: { variant: { include: { product: true } } } },
+      address: true,
+    },
+  });
+  if (!order) return { ok: false as const, error: "Order not found." };
+
+  try {
+    await prisma.order.update({
+      where: { id: order.id },
+      data: {
+        status: "DISPATCHED",
+        deliveryCost: data.deliveryCost,
+        courierName: data.courierName || null,
+        trackingInfo: data.trackingInfo || null,
+        dispatchNotes: data.dispatchNotes || null,
+        dispatchedAt: new Date(),
+      },
+    });
+
+    let emailResult: { sent: boolean; reason?: string } = {
+      sent: false,
+      reason: "No email address on file for this order.",
+    };
+
+    if (order.guestEmail) {
+      emailResult = await sendDispatchEmail({
+        to: order.guestEmail,
+        customerName: order.address?.fullName ?? "there",
+        orderId: order.id,
+        items: order.items.map((i) => ({
+          name: i.variant.product.name,
+          quantity: i.quantity,
+        })),
+        deliveryCost: data.deliveryCost,
+        courierName: data.courierName,
+        trackingInfo: data.trackingInfo,
+        dispatchNotes: data.dispatchNotes,
+      });
+
+      if (emailResult.sent) {
+        await prisma.order.update({
+          where: { id: order.id },
+          data: { dispatchEmailSentAt: new Date() },
+        });
+      }
+    }
+
+    revalidatePath(`/admin/orders/${order.id}`);
+    revalidatePath("/admin/orders");
+    revalidatePath("/admin");
+    return { ok: true as const, emailSent: emailResult.sent, emailReason: emailResult.reason };
+  } catch (err) {
+    return { ok: false as const, error: friendlyActionError(err, "Could not save dispatch details.") };
   }
 }
