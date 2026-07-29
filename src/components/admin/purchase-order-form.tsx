@@ -37,6 +37,10 @@ export function PurchaseOrderForm({
     setItems((rows) => rows.map((r, idx) => (idx === i ? { ...r, ...patch } : r)));
   }
 
+  function removeItem(i: number) {
+    setItems((rows) => rows.filter((_, idx) => idx !== i));
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setSaving(true);
@@ -124,7 +128,7 @@ export function PurchaseOrderForm({
 
         <div className="mt-2 flex flex-col gap-2">
           {items.map((row, i) => (
-            <div key={i} className="grid grid-cols-3 gap-2">
+            <div key={i} className="grid grid-cols-[1fr_1fr_1fr_auto] gap-2">
               <select
                 value={row.variantId}
                 onChange={(e) => updateItem(i, { variantId: e.target.value })}
@@ -151,6 +155,14 @@ export function PurchaseOrderForm({
                 onChange={(e) => updateItem(i, { unitCost: e.target.value })}
                 className="rounded-lg border border-white/15 bg-ink-elevated px-3 py-2 text-sand outline-none focus:border-coral"
               />
+              <button
+                type="button"
+                onClick={() => removeItem(i)}
+                disabled={items.length === 1}
+                className="font-sans text-sm text-sand/40 hover:text-coral disabled:opacity-20"
+              >
+                Remove
+              </button>
             </div>
           ))}
         </div>
