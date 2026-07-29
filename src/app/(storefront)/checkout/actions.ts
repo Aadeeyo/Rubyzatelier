@@ -1,6 +1,7 @@
 "use server";
 
 import { z } from "zod";
+import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { createZentaVirtualAccountCharge } from "@/lib/payments/zenta";
 
@@ -120,6 +121,8 @@ export async function placeOrder(input: CheckoutInput): Promise<CheckoutResult> 
       },
     });
 
+    revalidatePath("/shop");
+    revalidatePath("/");
     return { ok: true, orderId: order.id };
   } catch (err) {
     return {

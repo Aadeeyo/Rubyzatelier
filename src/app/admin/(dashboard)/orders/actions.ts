@@ -52,5 +52,9 @@ export async function updateOrderStatus(input: z.infer<typeof schema>) {
   revalidatePath("/admin/orders");
   revalidatePath("/admin/inventory");
   revalidatePath("/admin");
+  if (isRestockingCancel) {
+    revalidatePath("/shop");
+    revalidatePath("/");
+  }
   return { ok: true };
 }

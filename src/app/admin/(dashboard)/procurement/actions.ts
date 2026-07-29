@@ -106,5 +106,7 @@ export async function receiveStock(input: z.infer<typeof receiveSchema>) {
   revalidatePath("/admin/procurement");
   revalidatePath("/admin/inventory");
   revalidatePath("/admin");
+  revalidatePath("/shop");
+  revalidatePath("/");
   return { ok: true };
 }

@@ -23,5 +23,6 @@ export async function adjustInventory(input: z.infer<typeof schema>) {
   revalidatePath("/admin/inventory");
   revalidatePath("/admin");
   revalidatePath("/shop");
+  revalidatePath("/");
   return { ok: true };
 }

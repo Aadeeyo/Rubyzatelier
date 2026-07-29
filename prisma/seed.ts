@@ -13,7 +13,8 @@ async function main() {
         email: adminEmail,
         name: "Ruby",
         role: "OWNER",
-        passwordHash: await hashPassword("adire2026"),
+        // Change this immediately after first login in any real deployment.
+        passwordHash: await hashPassword("ChangeMe123!"),
       },
     });
     console.log(`Created admin user: ${adminEmail} / adire2026`);

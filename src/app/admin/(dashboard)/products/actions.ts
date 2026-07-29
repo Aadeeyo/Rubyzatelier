@@ -60,6 +60,7 @@ export async function createProduct(input: ProductInput) {
   revalidatePath("/admin/products");
   revalidatePath("/admin/inventory");
   revalidatePath("/shop");
+  revalidatePath("/");
   return { ok: true, id: product.id };
 }
 
@@ -94,6 +95,7 @@ export async function updateProductCore(
   revalidatePath("/admin/products");
   revalidatePath(`/admin/products/${id}`);
   revalidatePath("/shop");
+  revalidatePath("/");
   return { ok: true };
 }
 
@@ -114,6 +116,8 @@ export async function addVariant(productId: string, input: z.infer<typeof varian
 
   revalidatePath(`/admin/products/${productId}`);
   revalidatePath("/admin/inventory");
+  revalidatePath("/shop");
+  revalidatePath("/");
   return { ok: true };
 }
 
