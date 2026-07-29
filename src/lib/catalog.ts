@@ -8,9 +8,17 @@ const productWithRelations = {
   variants: { include: { inventory: true } },
 };
 
+// A product is only visible to customers once it's published AND at least
+// one variant has stock. It disappears the moment every variant hits 0 and
+// reappears automatically as soon as any variant is restocked - no manual
+// re-publish needed.
+const inStock = {
+  variants: { some: { inventory: { quantity: { gt: 0 } } } },
+};
+
 export async function getFeaturedProducts(take = 6) {
   return prisma.product.findMany({
-    where: { isPublished: true, isFeatured: true },
+    where: { isPublished: true, isFeatured: true, ...inStock },
     include: productWithRelations,
     orderBy: { createdAt: "desc" },
     take,
@@ -24,6 +32,7 @@ export async function getProducts(filters: {
   return prisma.product.findMany({
     where: {
       isPublished: true,
+      ...inStock,
       ...(filters.department ? { department: filters.department } : {}),
       ...(filters.category ? { category: filters.category } : {}),
     },

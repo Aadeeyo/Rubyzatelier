@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { requireAdminSession } from "@/lib/auth";
 import { friendlyActionError } from "@/lib/errors";
+import { revalidateStorefront } from "@/lib/revalidate";
 
 const schema = z.object({
   variantId: z.string(),
@@ -28,8 +29,7 @@ export async function adjustInventory(input: z.infer<typeof schema>) {
 
     revalidatePath("/admin/inventory");
     revalidatePath("/admin");
-    revalidatePath("/shop");
-    revalidatePath("/");
+    revalidateStorefront();
     return { ok: true as const };
   } catch (err) {
     return { ok: false as const, error: friendlyActionError(err, "Could not update inventory.") };

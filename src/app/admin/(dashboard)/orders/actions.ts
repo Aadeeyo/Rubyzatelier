@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { requireAdminSession } from "@/lib/auth";
 import { friendlyActionError } from "@/lib/errors";
+import { revalidateStorefront } from "@/lib/revalidate";
 
 const statuses = [
   "PENDING_PAYMENT",
@@ -59,8 +60,7 @@ export async function updateOrderStatus(input: z.infer<typeof schema>) {
     revalidatePath("/admin/inventory");
     revalidatePath("/admin");
     if (isRestockingCancel) {
-      revalidatePath("/shop");
-      revalidatePath("/");
+      revalidateStorefront();
     }
     return { ok: true as const };
   } catch (err) {

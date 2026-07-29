@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { getProductBySlug } from "@/lib/catalog";
+import { productTotalStock } from "@/lib/stock";
 import { AddToCartForm } from "@/components/add-to-cart-form";
 
 export default async function ProductPage({
@@ -9,7 +10,9 @@ export default async function ProductPage({
 }) {
   const { slug } = await params;
   const product = await getProductBySlug(slug);
-  if (!product || !product.isPublished) notFound();
+  if (!product || !product.isPublished || productTotalStock(product) === 0) {
+    notFound();
+  }
 
   const mainImage = product.images[0]?.url ?? null;
 

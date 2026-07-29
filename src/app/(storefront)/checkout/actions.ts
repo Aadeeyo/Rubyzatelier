@@ -1,9 +1,9 @@
 "use server";
 
 import { z } from "zod";
-import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { createZentaVirtualAccountCharge } from "@/lib/payments/zenta";
+import { revalidateStorefront } from "@/lib/revalidate";
 
 const checkoutSchema = z.object({
   fullName: z.string().min(2),
@@ -121,8 +121,7 @@ export async function placeOrder(input: CheckoutInput): Promise<CheckoutResult> 
       },
     });
 
-    revalidatePath("/shop");
-    revalidatePath("/");
+    revalidateStorefront();
     return { ok: true, orderId: order.id };
   } catch (err) {
     return {

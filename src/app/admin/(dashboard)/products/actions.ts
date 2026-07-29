@@ -7,6 +7,7 @@ import { requireAdminSession } from "@/lib/auth";
 import { slugify } from "@/lib/utils";
 import { isSupportedImageType, uploadProductImage } from "@/lib/storage";
 import { friendlyActionError } from "@/lib/errors";
+import { revalidateStorefront } from "@/lib/revalidate";
 
 const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
 
@@ -100,8 +101,7 @@ export async function createProduct(input: ProductInput) {
 
     revalidatePath("/admin/products");
     revalidatePath("/admin/inventory");
-    revalidatePath("/shop");
-    revalidatePath("/");
+    revalidateStorefront();
     return { ok: true as const, id: product.id };
   } catch (err) {
     return { ok: false as const, error: friendlyActionError(err, "Could not create product.") };
@@ -151,8 +151,7 @@ export async function updateProductCore(
 
     revalidatePath("/admin/products");
     revalidatePath(`/admin/products/${id}`);
-    revalidatePath("/shop");
-    revalidatePath("/");
+    revalidateStorefront();
     return { ok: true as const };
   } catch (err) {
     return { ok: false as const, error: friendlyActionError(err, "Could not save changes.") };
@@ -181,8 +180,7 @@ export async function addVariant(productId: string, input: z.infer<typeof varian
 
     revalidatePath(`/admin/products/${productId}`);
     revalidatePath("/admin/inventory");
-    revalidatePath("/shop");
-    revalidatePath("/");
+    revalidateStorefront();
     return { ok: true as const };
   } catch (err) {
     return { ok: false as const, error: friendlyActionError(err, "Could not add variant.") };

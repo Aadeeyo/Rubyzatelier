@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { requireAdminSession } from "@/lib/auth";
 import { friendlyActionError } from "@/lib/errors";
+import { revalidateStorefront } from "@/lib/revalidate";
 
 const createSchema = z.object({
   supplierId: z.string(),
@@ -133,8 +134,7 @@ export async function receiveStock(input: z.infer<typeof receiveSchema>) {
     revalidatePath("/admin/procurement");
     revalidatePath("/admin/inventory");
     revalidatePath("/admin");
-    revalidatePath("/shop");
-    revalidatePath("/");
+    revalidateStorefront();
     return { ok: true as const };
   } catch (err) {
     return { ok: false as const, error: friendlyActionError(err, "Could not receive stock.") };
