@@ -12,7 +12,7 @@ export function Footer() {
           </p>
         </div>
 
-        <div className="flex gap-16">
+        <div className="flex flex-wrap gap-10 sm:gap-16">
           <div className="flex flex-col gap-2">
             <span className="font-sans text-sm uppercase tracking-[0.2em] text-chrome">
               Shop
@@ -34,6 +34,15 @@ export function Footer() {
             <Link href="/about" className="text-sand/70 hover:text-coral">
               Our Story
             </Link>
+          </div>
+          <div className="flex flex-col gap-2">
+            <span className="font-sans text-sm uppercase tracking-[0.2em] text-chrome">
+              Visit
+            </span>
+            <span className="text-sand/70">Ogijo, Ogun State</span>
+            <a href="tel:09060229398" className="text-sand/70 hover:text-coral">
+              09060229398
+            </a>
           </div>
         </div>
       </div>
