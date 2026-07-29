@@ -5,7 +5,7 @@ export default function AboutPage() {
         Our Story
       </p>
       <h1 className="mt-3 font-display text-4xl text-sand sm:text-5xl">
-        Maa rin hoho
+        Má rìn hò hò
       </h1>
       <p className="mt-6 font-sans text-xl leading-relaxed text-sand/70">
         Rubyzatelier curates tops, dresses and jeans for women and kids —
@@ -15,7 +15,7 @@ export default function AboutPage() {
       </p>
       <p className="mt-4 font-sans text-xl leading-relaxed text-sand/70">
         We dress women and their little ones in pieces built to be worn
-        loudly, comfortably, and proudly. Maa rin hoho.
+        loudly, comfortably, and proudly. Má rìn hò hò.
       </p>
     </div>
   );

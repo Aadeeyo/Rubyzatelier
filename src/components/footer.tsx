@@ -8,7 +8,7 @@ export function Footer() {
         <div className="flex flex-col gap-3">
           <Logo tagline={false} className="items-start" />
           <p className="max-w-xs font-sans text-base text-sand/60">
-            Tops, dresses and jeans for women and kids — maa rin hoho.
+            Tops, dresses and jeans for women and kids — má rìn hò hò.
           </p>
         </div>
 

@@ -36,7 +36,7 @@ export function Hero() {
         transition={{ duration: 0.7, delay: 0.2 }}
         className="relative mt-2 font-sans text-2xl italic text-sand/80 sm:text-3xl"
       >
-        Maa rin hoho
+        Má rìn hò hò
       </motion.p>
 
       <motion.p

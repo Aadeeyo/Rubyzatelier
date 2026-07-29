@@ -15,7 +15,7 @@ export function Logo({
       </span>
       {tagline && (
         <span className="mt-0.5 font-sans text-[0.7rem] uppercase tracking-[0.35em] text-chrome">
-          Maa rin hoho
+          Má rìn hò hò
         </span>
       )}
     </Link>

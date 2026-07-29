@@ -21,7 +21,7 @@ const tangerine = Tangerine({
 });
 
 export const metadata: Metadata = {
-  title: "Rubyzatelier | Maa rin hoho",
+  title: "Rubyzatelier | Má rìn hò hò",
   description:
     "Rubyzatelier — tops, dresses and jeans for women and kids.",
 };
