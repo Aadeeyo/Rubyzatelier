@@ -15,7 +15,8 @@ export default function AboutPage() {
       </p>
       <p className="mt-4 font-sans text-xl leading-relaxed text-sand/70">
         We dress women and their little ones in pieces built to be worn
-        loudly, comfortably, and proudly. Má rìn hò hò.
+        loudly, comfortably, and proudly. We help you keep your wardrobe
+        properly curated based on your preference — Má rìn hò hò.
       </p>
     </div>
   );
