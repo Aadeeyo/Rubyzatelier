@@ -6,9 +6,9 @@ export function Footer() {
     <footer className="border-t border-white/10 bg-ink-soft">
       <div className="mx-auto flex max-w-7xl flex-col gap-8 px-5 py-12 sm:flex-row sm:justify-between sm:px-8">
         <div className="flex flex-col gap-3">
-          <Logo tagline={false} className="items-start" />
+          <Logo className="items-start" />
           <p className="max-w-xs font-sans text-base text-sand/60">
-            Tops, dresses and jeans for women and kids — má rìn hò hò.
+            Tops, dresses and jeans for women and kids.
           </p>
         </div>
 
@@ -33,9 +33,6 @@ export function Footer() {
             </span>
             <Link href="/about" className="text-sand/70 hover:text-coral">
               Our Story
-            </Link>
-            <Link href="/admin" className="text-sand/40 hover:text-coral">
-              Admin
             </Link>
           </div>
         </div>
