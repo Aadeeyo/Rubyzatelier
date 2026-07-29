@@ -64,7 +64,9 @@ export function AddToCartForm({
       quantity,
     );
     setJustAdded(true);
-    setTimeout(() => setJustAdded(false), 1800);
+    setTimeout(() => {
+      router.back();
+    }, 600);
   }
 
   return (
