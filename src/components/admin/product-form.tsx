@@ -106,6 +106,17 @@ export function ProductForm({
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+
+    if (mode === "create") {
+      const incomplete = variants.some((v) => !v.size || !v.color || !v.sku);
+      if (incomplete) {
+        const message = "Every variant needs a size, color, and SKU.";
+        toast.error(message);
+        setError(message);
+        return;
+      }
+    }
+
     setSaving(true);
     setError(null);
 

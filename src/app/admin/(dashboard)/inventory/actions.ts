@@ -4,7 +4,7 @@ import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { requireAdminSession } from "@/lib/auth";
-import { friendlyPrismaError } from "@/lib/errors";
+import { friendlyActionError } from "@/lib/errors";
 
 const schema = z.object({
   variantId: z.string(),
@@ -14,7 +14,11 @@ const schema = z.object({
 
 export async function adjustInventory(input: z.infer<typeof schema>) {
   await requireAdminSession();
-  const data = schema.parse(input);
+  const parsed = schema.safeParse(input);
+  if (!parsed.success) {
+    return { ok: false as const, error: friendlyActionError(parsed.error, "Invalid inventory update.") };
+  }
+  const data = parsed.data;
 
   try {
     await prisma.inventory.update({
@@ -28,6 +32,6 @@ export async function adjustInventory(input: z.infer<typeof schema>) {
     revalidatePath("/");
     return { ok: true as const };
   } catch (err) {
-    return { ok: false as const, error: friendlyPrismaError(err, "Could not update inventory.") };
+    return { ok: false as const, error: friendlyActionError(err, "Could not update inventory.") };
   }
 }

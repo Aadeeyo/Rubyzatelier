@@ -4,7 +4,7 @@ import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { requireAdminSession } from "@/lib/auth";
-import { friendlyPrismaError } from "@/lib/errors";
+import { friendlyActionError } from "@/lib/errors";
 
 const schema = z.object({
   name: z.string().min(2),
@@ -17,7 +17,11 @@ const schema = z.object({
 
 export async function createSupplier(input: z.infer<typeof schema>) {
   await requireAdminSession();
-  const data = schema.parse(input);
+  const parsed = schema.safeParse(input);
+  if (!parsed.success) {
+    return { ok: false as const, error: friendlyActionError(parsed.error, "Invalid supplier details.") };
+  }
+  const data = parsed.data;
 
   try {
     await prisma.supplier.create({
@@ -34,6 +38,6 @@ export async function createSupplier(input: z.infer<typeof schema>) {
     revalidatePath("/admin/suppliers");
     return { ok: true as const };
   } catch (err) {
-    return { ok: false as const, error: friendlyPrismaError(err, "Could not create supplier.") };
+    return { ok: false as const, error: friendlyActionError(err, "Could not create supplier.") };
   }
 }

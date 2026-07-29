@@ -6,7 +6,7 @@ import { prisma } from "@/lib/prisma";
 import { requireAdminSession } from "@/lib/auth";
 import { slugify } from "@/lib/utils";
 import { isSupportedImageType, uploadProductImage } from "@/lib/storage";
-import { friendlyPrismaError } from "@/lib/errors";
+import { friendlyActionError } from "@/lib/errors";
 
 const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
 
@@ -35,9 +35,9 @@ export async function uploadImage(formData: FormData) {
 }
 
 const variantSchema = z.object({
-  size: z.string().min(1),
-  color: z.string().min(1),
-  sku: z.string().min(1),
+  size: z.string().min(1, "size is required"),
+  color: z.string().min(1, "color is required"),
+  sku: z.string().min(1, "SKU is required"),
   priceOverride: z.number().int().positive().nullable().optional(),
   quantity: z.number().int().min(0),
 });
@@ -52,14 +52,18 @@ const productSchema = z.object({
   imageUrl: z.string().min(1),
   isPublished: z.boolean(),
   isFeatured: z.boolean(),
-  variants: z.array(variantSchema).min(1),
+  variants: z.array(variantSchema).min(1, "at least one variant is required"),
 });
 
 export type ProductInput = z.infer<typeof productSchema>;
 
 export async function createProduct(input: ProductInput) {
   await requireAdminSession();
-  const data = productSchema.parse(input);
+  const parsed = productSchema.safeParse(input);
+  if (!parsed.success) {
+    return { ok: false as const, error: friendlyActionError(parsed.error, "Invalid product details.") };
+  }
+  const data = parsed.data;
   const slug = slugify(data.slug || data.name);
 
   const existing = await prisma.product.findUnique({ where: { slug } });
@@ -100,7 +104,7 @@ export async function createProduct(input: ProductInput) {
     revalidatePath("/");
     return { ok: true as const, id: product.id };
   } catch (err) {
-    return { ok: false as const, error: friendlyPrismaError(err, "Could not create product.") };
+    return { ok: false as const, error: friendlyActionError(err, "Could not create product.") };
   }
 }
 
@@ -111,7 +115,11 @@ export async function updateProductCore(
   input: z.infer<typeof coreUpdateSchema>,
 ) {
   await requireAdminSession();
-  const data = coreUpdateSchema.parse(input);
+  const parsed = coreUpdateSchema.safeParse(input);
+  if (!parsed.success) {
+    return { ok: false as const, error: friendlyActionError(parsed.error, "Invalid product details.") };
+  }
+  const data = parsed.data;
   const slug = slugify(data.slug || data.name);
 
   const existing = await prisma.product.findUnique({ where: { slug } });
@@ -147,13 +155,17 @@ export async function updateProductCore(
     revalidatePath("/");
     return { ok: true as const };
   } catch (err) {
-    return { ok: false as const, error: friendlyPrismaError(err, "Could not save changes.") };
+    return { ok: false as const, error: friendlyActionError(err, "Could not save changes.") };
   }
 }
 
 export async function addVariant(productId: string, input: z.infer<typeof variantSchema>) {
   await requireAdminSession();
-  const data = variantSchema.parse(input);
+  const parsed = variantSchema.safeParse(input);
+  if (!parsed.success) {
+    return { ok: false as const, error: friendlyActionError(parsed.error, "Invalid variant details.") };
+  }
+  const data = parsed.data;
 
   try {
     await prisma.productVariant.create({
@@ -173,7 +185,7 @@ export async function addVariant(productId: string, input: z.infer<typeof varian
     revalidatePath("/");
     return { ok: true as const };
   } catch (err) {
-    return { ok: false as const, error: friendlyPrismaError(err, "Could not add variant.") };
+    return { ok: false as const, error: friendlyActionError(err, "Could not add variant.") };
   }
 }
 
@@ -182,11 +194,15 @@ export async function updateVariantDetails(
   input: { size: string; color: string; sku: string; priceOverride: number | null },
 ) {
   await requireAdminSession();
-  await prisma.productVariant.update({
-    where: { id: variantId },
-    data: input,
-  });
-  revalidatePath("/admin/products");
-  revalidatePath("/admin/inventory");
-  return { ok: true };
+  try {
+    await prisma.productVariant.update({
+      where: { id: variantId },
+      data: input,
+    });
+    revalidatePath("/admin/products");
+    revalidatePath("/admin/inventory");
+    return { ok: true as const };
+  } catch (err) {
+    return { ok: false as const, error: friendlyActionError(err, "Could not update variant.") };
+  }
 }

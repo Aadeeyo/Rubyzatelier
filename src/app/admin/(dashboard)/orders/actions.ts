@@ -4,7 +4,7 @@ import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { requireAdminSession } from "@/lib/auth";
-import { friendlyPrismaError } from "@/lib/errors";
+import { friendlyActionError } from "@/lib/errors";
 
 const statuses = [
   "PENDING_PAYMENT",
@@ -23,7 +23,11 @@ const schema = z.object({
 
 export async function updateOrderStatus(input: z.infer<typeof schema>) {
   await requireAdminSession();
-  const data = schema.parse(input);
+  const parsed = schema.safeParse(input);
+  if (!parsed.success) {
+    return { ok: false as const, error: friendlyActionError(parsed.error, "Invalid status update.") };
+  }
+  const data = parsed.data;
 
   const order = await prisma.order.findUnique({
     where: { id: data.orderId },
@@ -60,6 +64,6 @@ export async function updateOrderStatus(input: z.infer<typeof schema>) {
     }
     return { ok: true as const };
   } catch (err) {
-    return { ok: false as const, error: friendlyPrismaError(err, "Could not update order status.") };
+    return { ok: false as const, error: friendlyActionError(err, "Could not update order status.") };
   }
 }

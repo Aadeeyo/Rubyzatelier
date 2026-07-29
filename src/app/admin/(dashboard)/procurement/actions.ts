@@ -4,7 +4,7 @@ import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { requireAdminSession } from "@/lib/auth";
-import { friendlyPrismaError } from "@/lib/errors";
+import { friendlyActionError } from "@/lib/errors";
 
 const createSchema = z.object({
   supplierId: z.string(),
@@ -23,7 +23,14 @@ const createSchema = z.object({
 
 export async function createPurchaseOrder(input: z.infer<typeof createSchema>) {
   const session = await requireAdminSession();
-  const data = createSchema.parse(input);
+  const parsed = createSchema.safeParse(input);
+  if (!parsed.success) {
+    return {
+      ok: false as const,
+      error: friendlyActionError(parsed.error, "Invalid purchase order details."),
+    };
+  }
+  const data = parsed.data;
 
   try {
     const po = await prisma.purchaseOrder.create({
@@ -48,7 +55,7 @@ export async function createPurchaseOrder(input: z.infer<typeof createSchema>) {
   } catch (err) {
     return {
       ok: false as const,
-      error: friendlyPrismaError(err, "Could not create purchase order."),
+      error: friendlyActionError(err, "Could not create purchase order."),
     };
   }
 }
@@ -66,7 +73,7 @@ export async function setPurchaseOrderStatus(
   } catch (err) {
     return {
       ok: false as const,
-      error: friendlyPrismaError(err, "Could not update purchase order status."),
+      error: friendlyActionError(err, "Could not update purchase order status."),
     };
   }
 }
@@ -78,7 +85,11 @@ const receiveSchema = z.object({
 
 export async function receiveStock(input: z.infer<typeof receiveSchema>) {
   await requireAdminSession();
-  const data = receiveSchema.parse(input);
+  const parsed = receiveSchema.safeParse(input);
+  if (!parsed.success) {
+    return { ok: false as const, error: friendlyActionError(parsed.error, "Invalid receive request.") };
+  }
+  const data = parsed.data;
 
   const item = await prisma.purchaseOrderItem.findUnique({
     where: { id: data.purchaseOrderItemId },
@@ -126,6 +137,6 @@ export async function receiveStock(input: z.infer<typeof receiveSchema>) {
     revalidatePath("/");
     return { ok: true as const };
   } catch (err) {
-    return { ok: false as const, error: friendlyPrismaError(err, "Could not receive stock.") };
+    return { ok: false as const, error: friendlyActionError(err, "Could not receive stock.") };
   }
 }
