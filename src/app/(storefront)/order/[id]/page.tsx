@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { formatNaira } from "@/lib/utils";
+import { BANK_TRANSFER } from "@/lib/site";
 
 export default async function OrderConfirmationPage({
   params,
@@ -31,20 +32,25 @@ export default async function OrderConfirmationPage({
       </p>
 
       <div className="mt-8 rounded-xl border border-coral/30 bg-coral/5 p-6">
-        <h2 className="font-display text-xl text-sand">Pay via Zenta virtual account</h2>
+        <h2 className="font-display text-xl text-sand">Pay via bank transfer</h2>
         <dl className="mt-4 grid grid-cols-2 gap-y-2 font-sans text-base">
           <dt className="text-sand/50">Bank</dt>
-          <dd className="text-sand">{order.virtualAccountBank}</dd>
+          <dd className="text-sand">{BANK_TRANSFER.bankName}</dd>
+          <dt className="text-sand/50">Account name</dt>
+          <dd className="text-sand">{BANK_TRANSFER.accountName}</dd>
           <dt className="text-sand/50">Account number</dt>
-          <dd className="tracking-widest text-sand">{order.virtualAccountNumber}</dd>
+          <dd className="tracking-widest text-sand">{BANK_TRANSFER.accountNumber}</dd>
           <dt className="text-sand/50">Amount</dt>
           <dd className="text-sand">{formatNaira(order.total)}</dd>
           <dt className="text-sand/50">Reference</dt>
           <dd className="text-sand">{order.paymentRef}</dd>
         </dl>
         <p className="mt-4 font-sans text-sm text-sand/50">
-          Transfer the exact amount to the account above. Your order will be
-          marked paid once the transfer is confirmed.
+          Transfer the exact amount to the account above, using{" "}
+          <strong className="text-sand">{order.paymentRef}</strong> as your
+          transfer narration/reference. Your order will be marked paid once
+          we confirm the transfer, and you&apos;ll get an email once that
+          happens.
         </p>
       </div>
 

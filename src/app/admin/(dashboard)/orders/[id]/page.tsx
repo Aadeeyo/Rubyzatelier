@@ -54,18 +54,17 @@ export default async function AdminOrderDetailPage({
         </div>
 
         <div className="rounded-xl border border-white/10 bg-ink-soft p-6">
-          <h2 className="font-display text-xl text-sand">Payment (Zenta)</h2>
+          <h2 className="font-display text-xl text-sand">Payment (bank transfer)</h2>
           <dl className="mt-3 grid grid-cols-2 gap-y-2 font-sans text-sand/70">
             <dt>Reference</dt>
             <dd className="text-sand">{order.paymentRef ?? "—"}</dd>
-            <dt>Virtual account</dt>
-            <dd className="text-sand">{order.virtualAccountNumber ?? "—"}</dd>
-            <dt>Bank</dt>
-            <dd className="text-sand">{order.virtualAccountBank ?? "—"}</dd>
+            <dt>Status</dt>
+            <dd className="text-sand">{order.status.replaceAll("_", " ")}</dd>
           </dl>
           <p className="mt-3 font-sans text-sm text-sand/40">
-            No live Zenta webhook is configured yet — confirm transfers
-            manually and update the status above once payment is received.
+            Check your bank account for a transfer matching this reference,
+            then mark the order Paid above — this sends the customer a
+            payment confirmation email automatically.
           </p>
         </div>
       </div>
@@ -98,7 +97,7 @@ export default async function AdminOrderDetailPage({
             <p className="mt-2 mb-4 font-sans text-sm text-sand/50">
               Set the delivery cost and courier details, then notify the
               customer by email. The delivery fee is collected by the
-              courier on arrival, not through Zenta.
+              courier on arrival, separately from the order payment.
             </p>
             <DispatchForm orderId={order.id} />
           </>

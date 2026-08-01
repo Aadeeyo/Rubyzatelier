@@ -39,7 +39,14 @@ export function OrderStatusControl({
       toast.error(result.error);
       return;
     }
-    toast.success(`Order marked ${next.replaceAll("_", " ").toLowerCase()}`);
+
+    if (result.emailSent === true) {
+      toast.success("Order marked paid — customer notified by email");
+    } else if (result.emailSent === false) {
+      toast.error(`Order marked paid, but the email was not sent: ${result.emailReason}`);
+    } else {
+      toast.success(`Order marked ${next.replaceAll("_", " ").toLowerCase()}`);
+    }
     router.refresh();
   }
 

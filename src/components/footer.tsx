@@ -43,6 +43,9 @@ export function Footer() {
             <a href="tel:09060229398" className="text-sand/70 hover:text-coral">
               09060229398
             </a>
+            <span className="mt-1 text-sm text-sand/40">
+              Delivering to Ogijo, Itaoluwo, Lukosi &amp; beyond
+            </span>
           </div>
         </div>
       </div>

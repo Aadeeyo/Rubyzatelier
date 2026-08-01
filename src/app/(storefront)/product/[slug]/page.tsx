@@ -1,7 +1,35 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getProductBySlug } from "@/lib/catalog";
 import { productTotalStock } from "@/lib/stock";
 import { AddToCartForm } from "@/components/add-to-cart-form";
+import { SITE_URL, SITE_NAME, SERVICE_AREAS } from "@/lib/site";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const product = await getProductBySlug(slug);
+  if (!product || !product.isPublished || productTotalStock(product) === 0) {
+    return {};
+  }
+
+  const image = product.images[0]?.url;
+  const title = `${product.name} — ${product.department === "WOMEN" ? "Women's" : "Kids'"} ${product.category.toLowerCase().replace("_", " + ")}`;
+
+  return {
+    title,
+    description: product.description,
+    alternates: { canonical: `/product/${product.slug}` },
+    openGraph: {
+      title,
+      description: product.description,
+      images: image ? [{ url: image }] : undefined,
+    },
+  };
+}
 
 export default async function ProductPage({
   params,
@@ -15,9 +43,34 @@ export default async function ProductPage({
   }
 
   const mainImage = product.images[0]?.url ?? null;
+  const price = Math.min(
+    product.basePrice,
+    ...product.variants.map((v) => v.priceOverride ?? product.basePrice),
+  );
+
+  const productJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: product.name,
+    description: product.description,
+    image: mainImage ? [`${SITE_URL}${mainImage}`] : undefined,
+    brand: { "@type": "Brand", name: SITE_NAME },
+    offers: {
+      "@type": "Offer",
+      url: `${SITE_URL}/product/${product.slug}`,
+      priceCurrency: "NGN",
+      price: (price / 100).toFixed(2),
+      availability: "https://schema.org/InStock",
+      areaServed: SERVICE_AREAS,
+    },
+  };
 
   return (
     <div className="mx-auto grid w-full max-w-6xl grid-cols-1 gap-12 px-5 py-14 sm:px-8 md:grid-cols-2">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd) }}
+      />
       <div className="grid gap-4">
         <div className="aspect-[4/5] overflow-hidden rounded-xl bg-ink-elevated">
           {mainImage && (

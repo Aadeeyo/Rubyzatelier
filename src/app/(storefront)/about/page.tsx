@@ -1,3 +1,12 @@
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Our Story",
+  description:
+    "Rubyzatelier is based in Ogijo, Ogun State, dressing women and kids across Ogijo, Itaoluwo, Lukosi and beyond.",
+  alternates: { canonical: "/about" },
+};
+
 export default function AboutPage() {
   return (
     <div className="mx-auto flex w-full max-w-3xl flex-1 flex-col justify-center px-5 py-24 sm:px-8">
@@ -17,6 +26,10 @@ export default function AboutPage() {
         We dress women and their little ones in pieces built to be worn
         loudly, comfortably, and proudly. We help you keep your wardrobe
         properly curated based on your preference — Má rìn hò hò.
+      </p>
+      <p className="mt-4 font-sans text-xl leading-relaxed text-sand/70">
+        Based in Ogijo, Ogun State, we&apos;re proud to dress customers across
+        Ogijo, Itaoluwo, Lukosi and beyond.
       </p>
     </div>
   );

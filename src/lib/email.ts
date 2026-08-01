@@ -4,9 +4,81 @@ import { formatNaira } from "@/lib/utils";
 
 const FROM_ADDRESS = process.env.RESEND_FROM_EMAIL ?? "Rubyzatelier <onboarding@resend.dev>";
 
-export interface DispatchEmailResult {
+export interface EmailResult {
   sent: boolean;
   reason?: string;
+}
+
+async function send(params: { to: string; subject: string; html: string; orderId: string }): Promise<EmailResult> {
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) {
+    console.warn(
+      `[email] RESEND_API_KEY not configured — skipping email for order ${params.orderId}`,
+    );
+    return { sent: false, reason: "Email is not configured (RESEND_API_KEY missing)." };
+  }
+
+  try {
+    const resend = new Resend(apiKey);
+    const result = await resend.emails.send({
+      from: FROM_ADDRESS,
+      to: params.to,
+      subject: params.subject,
+      html: params.html,
+    });
+
+    if (result.error) {
+      console.error("[email] Resend returned an error:", result.error);
+      return { sent: false, reason: result.error.message };
+    }
+    return { sent: true };
+  } catch (err) {
+    console.error("[email] Failed to send email:", err);
+    return { sent: false, reason: err instanceof Error ? err.message : "Unknown error" };
+  }
+}
+
+export async function sendPaymentConfirmedEmail(params: {
+  to: string;
+  customerName: string;
+  orderId: string;
+  items: { name: string; quantity: number }[];
+  total: number;
+}): Promise<EmailResult> {
+  const orderRef = params.orderId.slice(-8).toUpperCase();
+  const itemsList = params.items
+    .map((i) => `<li>${i.name} × ${i.quantity}</li>`)
+    .join("");
+
+  const html = `
+    <div style="font-family: Georgia, 'Times New Roman', serif; color: #1a1a1a; max-width: 560px; margin: 0 auto;">
+      <h1 style="font-size: 22px; margin-bottom: 4px;">Rubyzatelier</h1>
+      <p style="color: #666; margin-top: 0;">Payment confirmed for order #${orderRef}</p>
+
+      <p>Hi ${params.customerName.split(" ")[0]},</p>
+      <p>
+        We've confirmed your payment of <strong>${formatNaira(params.total)}</strong>.
+        Your order is now being processed.
+      </p>
+
+      <p style="margin-top: 20px;">Items in this order:</p>
+      <ul>${itemsList}</ul>
+
+      <p>
+        We'll email you again once your order is dispatched, with delivery
+        cost and courier details.
+      </p>
+
+      <p style="margin-top: 24px; color: #666;">Thank you for shopping with us — má rìn hò hò.</p>
+    </div>
+  `;
+
+  return send({
+    to: params.to,
+    subject: `Payment confirmed for your Rubyzatelier order #${orderRef}`,
+    html,
+    orderId: params.orderId,
+  });
 }
 
 export async function sendDispatchEmail(params: {
@@ -18,15 +90,7 @@ export async function sendDispatchEmail(params: {
   courierName?: string | null;
   trackingInfo?: string | null;
   dispatchNotes?: string | null;
-}): Promise<DispatchEmailResult> {
-  const apiKey = process.env.RESEND_API_KEY;
-  if (!apiKey) {
-    console.warn(
-      `[email] RESEND_API_KEY not configured — skipping dispatch email for order ${params.orderId}`,
-    );
-    return { sent: false, reason: "Email is not configured (RESEND_API_KEY missing)." };
-  }
-
+}): Promise<EmailResult> {
   const orderRef = params.orderId.slice(-8).toUpperCase();
   const itemsList = params.items
     .map((i) => `<li>${i.name} × ${i.quantity}</li>`)
@@ -61,22 +125,10 @@ export async function sendDispatchEmail(params: {
     </div>
   `;
 
-  try {
-    const resend = new Resend(apiKey);
-    const result = await resend.emails.send({
-      from: FROM_ADDRESS,
-      to: params.to,
-      subject: `Your Rubyzatelier order #${orderRef} has been dispatched`,
-      html,
-    });
-
-    if (result.error) {
-      console.error("[email] Resend returned an error:", result.error);
-      return { sent: false, reason: result.error.message };
-    }
-    return { sent: true };
-  } catch (err) {
-    console.error("[email] Failed to send dispatch email:", err);
-    return { sent: false, reason: err instanceof Error ? err.message : "Unknown error" };
-  }
+  return send({
+    to: params.to,
+    subject: `Your Rubyzatelier order #${orderRef} has been dispatched`,
+    html,
+    orderId: params.orderId,
+  });
 }

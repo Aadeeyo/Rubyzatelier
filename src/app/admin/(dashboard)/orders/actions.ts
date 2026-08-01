@@ -6,7 +6,7 @@ import { prisma } from "@/lib/prisma";
 import { requireAdminSession } from "@/lib/auth";
 import { friendlyActionError } from "@/lib/errors";
 import { revalidateStorefront } from "@/lib/revalidate";
-import { sendDispatchEmail } from "@/lib/email";
+import { sendDispatchEmail, sendPaymentConfirmedEmail } from "@/lib/email";
 
 const statuses = [
   "PENDING_PAYMENT",
@@ -34,7 +34,10 @@ export async function updateOrderStatus(input: z.infer<typeof schema>) {
 
   const order = await prisma.order.findUnique({
     where: { id: data.orderId },
-    include: { items: true },
+    include: {
+      items: { include: { variant: { include: { product: true } } } },
+      address: true,
+    },
   });
   if (!order) return { ok: false as const, error: "Order not found." };
 
@@ -42,6 +45,8 @@ export async function updateOrderStatus(input: z.infer<typeof schema>) {
     (data.status === "CANCELLED" || data.status === "REFUNDED") &&
     order.status !== "CANCELLED" &&
     order.status !== "REFUNDED";
+
+  const isNewlyPaid = data.status === "PAID" && order.status !== "PAID";
 
   try {
     await prisma.$transaction(async (tx) => {
@@ -57,6 +62,20 @@ export async function updateOrderStatus(input: z.infer<typeof schema>) {
       }
     });
 
+    let emailResult: { sent: boolean; reason?: string } | undefined;
+    if (isNewlyPaid && order.guestEmail) {
+      emailResult = await sendPaymentConfirmedEmail({
+        to: order.guestEmail,
+        customerName: order.address?.fullName ?? "there",
+        orderId: order.id,
+        items: order.items.map((i) => ({
+          name: i.variant.product.name,
+          quantity: i.quantity,
+        })),
+        total: order.total,
+      });
+    }
+
     revalidatePath(`/admin/orders/${order.id}`);
     revalidatePath("/admin/orders");
     revalidatePath("/admin/inventory");
@@ -64,7 +83,7 @@ export async function updateOrderStatus(input: z.infer<typeof schema>) {
     if (isRestockingCancel) {
       revalidateStorefront();
     }
-    return { ok: true as const };
+    return { ok: true as const, emailSent: emailResult?.sent, emailReason: emailResult?.reason };
   } catch (err) {
     return { ok: false as const, error: friendlyActionError(err, "Could not update order status.") };
   }

@@ -140,12 +140,12 @@ export default function CheckoutPage() {
           disabled={submitting}
           className="mt-4 rounded-full bg-coral px-8 py-4 font-sans text-lg text-sand transition-transform hover:scale-[1.01] disabled:opacity-50"
         >
-          {submitting ? "Placing order…" : `Pay ${formatNaira(total)} via Zenta`}
+          {submitting ? "Placing order…" : `Place order — ${formatNaira(total)}`}
         </button>
         <p className="text-center font-sans text-sm text-sand/40">
-          You&apos;ll receive a Zenta virtual account number to complete
-          payment. Delivery is arranged after payment — we&apos;ll email you
-          the delivery cost and courier details, payable directly to the
+          You&apos;ll receive our bank transfer details to complete payment.
+          Delivery is arranged after payment — we&apos;ll email you the
+          delivery cost and courier details, payable directly to the
           delivery partner on arrival.
         </p>
       </form>

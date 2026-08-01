@@ -179,12 +179,10 @@ model Order {
   subtotal      Int
   total         Int
   paymentRef    String?
-  paymentMethod String      @default("zenta")
-  virtualAccountNumber String?
-  virtualAccountBank   String?
+  paymentMethod String      @default("bank_transfer")
 
   // Delivery is arranged and priced after payment, then paid in cash/transfer
-  // to the delivery partner on arrival - not collected up front via Zenta.
+  // to the delivery partner on arrival - not collected up front.
   deliveryCost        Int?
   courierName         String?
   trackingInfo        String?

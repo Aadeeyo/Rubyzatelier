@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getProducts } from "@/lib/catalog";
 import { ProductCard } from "@/components/product-card";
@@ -10,6 +11,22 @@ const DEPARTMENT_MAP: Record<string, Department> = {
 };
 
 const VALID_CATEGORIES: ProductCategory[] = ["TOP", "DRESS", "JEANS", "TOP_BOTTOM"];
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ department: string }>;
+}): Promise<Metadata> {
+  const { department: departmentParam } = await params;
+  if (!DEPARTMENT_MAP[departmentParam]) return {};
+
+  const label = departmentParam === "women" ? "Women's" : "Kids'";
+  return {
+    title: `${label} Clothing`,
+    description: `Shop ${label.toLowerCase()} tops, dresses and jeans from Rubyzatelier — based in Ogijo, Ogun State, delivering to Ogijo, Itaoluwo, Lukosi and beyond.`,
+    alternates: { canonical: `/shop/${departmentParam}` },
+  };
+}
 
 export default async function DepartmentShopPage({
   params,

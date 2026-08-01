@@ -1,9 +1,17 @@
+import type { Metadata } from "next";
 import { getProducts } from "@/lib/catalog";
 import { ProductCard } from "@/components/product-card";
 import { CategoryFilterBar } from "@/components/category-filter-bar";
 import type { ProductCategory } from "@/generated/prisma/enums";
 
 const VALID_CATEGORIES: ProductCategory[] = ["TOP", "DRESS", "JEANS", "TOP_BOTTOM"];
+
+export const metadata: Metadata = {
+  title: "Shop All Pieces",
+  description:
+    "Browse all tops, dresses and jeans for women and kids from Rubyzatelier — based in Ogijo, Ogun State, delivering to Ogijo, Itaoluwo, Lukosi and beyond.",
+  alternates: { canonical: "/shop" },
+};
 
 export default async function ShopAllPage({
   searchParams,

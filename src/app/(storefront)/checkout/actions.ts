@@ -2,7 +2,6 @@
 
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
-import { createZentaVirtualAccountCharge } from "@/lib/payments/zenta";
 import { revalidateStorefront } from "@/lib/revalidate";
 
 const checkoutSchema = z.object({
@@ -58,7 +57,7 @@ export async function placeOrder(input: CheckoutInput): Promise<CheckoutResult> 
       );
       // Delivery cost is arranged and priced by admin after payment, then
       // paid directly to the delivery partner on arrival - it's not part
-      // of the amount collected up front via Zenta.
+      // of the amount collected up front via bank transfer.
       const total = subtotal;
 
       const address = await tx.address.create({
@@ -86,6 +85,7 @@ export async function placeOrder(input: CheckoutInput): Promise<CheckoutResult> 
           subtotal,
           total,
           status: "PENDING_PAYMENT",
+          paymentMethod: "bank_transfer",
           items: {
             create: data.lines.map((l) => ({
               variantId: l.variantId,
@@ -106,20 +106,11 @@ export async function placeOrder(input: CheckoutInput): Promise<CheckoutResult> 
       return createdOrder;
     });
 
-    const charge = await createZentaVirtualAccountCharge({
-      orderId: order.id,
-      amount: order.total,
-      customerEmail: data.email,
-      customerName: data.fullName,
-    });
-
+    // Customers reference this in their bank transfer narration so admin can
+    // match incoming payments to orders when confirming manually.
     await prisma.order.update({
       where: { id: order.id },
-      data: {
-        paymentRef: charge.reference,
-        virtualAccountNumber: charge.virtualAccountNumber,
-        virtualAccountBank: charge.bankName,
-      },
+      data: { paymentRef: `RZ-${order.id.slice(-8).toUpperCase()}` },
     });
 
     revalidateStorefront();
