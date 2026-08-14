@@ -69,7 +69,7 @@ export async function sendPaymentConfirmedEmail(params: {
         cost and courier details.
       </p>
 
-      <p style="margin-top: 24px; color: #666;">Thank you for shopping with us — má rìn hò hò.</p>
+      <p style="margin-top: 24px; color: #666;">Thank you for shopping with us — we can't wait to see you again.</p>
     </div>
   `;
 
@@ -121,13 +121,49 @@ export async function sendDispatchEmail(params: {
       <p style="margin-top: 20px;">Items in this order:</p>
       <ul>${itemsList}</ul>
 
-      <p style="margin-top: 24px; color: #666;">Thank you for shopping with us — má rìn hò hò.</p>
+      <p style="margin-top: 24px; color: #666;">Thank you for shopping with us — we can't wait to see you again.</p>
     </div>
   `;
 
   return send({
     to: params.to,
     subject: `Your Rubyzatelier order #${orderRef} has been dispatched`,
+    html,
+    orderId: params.orderId,
+  });
+}
+
+export async function sendReadyForPickupEmail(params: {
+  to: string;
+  customerName: string;
+  orderId: string;
+  items: { name: string; quantity: number }[];
+}): Promise<EmailResult> {
+  const orderRef = params.orderId.slice(-8).toUpperCase();
+  const itemsList = params.items
+    .map((i) => `<li>${i.name} × ${i.quantity}</li>`)
+    .join("");
+
+  const html = `
+    <div style="font-family: Georgia, 'Times New Roman', serif; color: #1a1a1a; max-width: 560px; margin: 0 auto;">
+      <h1 style="font-size: 22px; margin-bottom: 4px;">Rubyzatelier</h1>
+      <p style="color: #666; margin-top: 0;">Order #${orderRef} is ready for pickup</p>
+
+      <p>Hi ${params.customerName.split(" ")[0]},</p>
+      <p>
+        Your order is ready to collect at <strong>Oriokuta, Ogijo</strong>.
+      </p>
+
+      <p style="margin-top: 20px;">Items in this order:</p>
+      <ul>${itemsList}</ul>
+
+      <p style="margin-top: 24px; color: #666;">Thank you for shopping with us — we can't wait to see you again.</p>
+    </div>
+  `;
+
+  return send({
+    to: params.to,
+    subject: `Your Rubyzatelier order #${orderRef} is ready for pickup`,
     html,
     orderId: params.orderId,
   });

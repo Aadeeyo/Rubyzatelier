@@ -9,17 +9,17 @@ export default async function SuppliersPage() {
   return (
     <div>
       <div className="flex items-center justify-between">
-        <h1 className="font-display text-3xl text-sand">Suppliers</h1>
+        <h1 className="font-display text-3xl text-espresso">Suppliers</h1>
       </div>
 
       <div className="mt-6">
         <NewSupplierForm />
       </div>
 
-      <div className="mt-8 overflow-x-auto rounded-xl border border-white/10 bg-ink-soft">
+      <div className="mt-8 overflow-x-auto rounded-xl border border-cocoa/15 bg-cream">
         <table className="w-full font-sans text-left">
           <thead>
-            <tr className="border-b border-white/10 text-sm uppercase tracking-widest text-chrome">
+            <tr className="border-b border-cocoa/15 text-sm uppercase tracking-widest text-cocoa">
               <th className="px-5 py-3">Name</th>
               <th className="px-5 py-3">Contact</th>
               <th className="px-5 py-3">Email</th>
@@ -28,17 +28,17 @@ export default async function SuppliersPage() {
           </thead>
           <tbody>
             {suppliers.map((s) => (
-              <tr key={s.id} className="border-b border-white/5 last:border-0">
-                <td className="px-5 py-3 text-sand">{s.name}</td>
-                <td className="px-5 py-3 text-sand/70">{s.contactName ?? "—"}</td>
-                <td className="px-5 py-3 text-sand/70">{s.email ?? "—"}</td>
-                <td className="px-5 py-3 text-sand/70">{s.phone ?? "—"}</td>
+              <tr key={s.id} className="border-b border-cocoa/10 last:border-0">
+                <td className="px-5 py-3 text-espresso">{s.name}</td>
+                <td className="px-5 py-3 text-espresso/70">{s.contactName ?? "—"}</td>
+                <td className="px-5 py-3 text-espresso/70">{s.email ?? "—"}</td>
+                <td className="px-5 py-3 text-espresso/70">{s.phone ?? "—"}</td>
               </tr>
             ))}
           </tbody>
         </table>
         {suppliers.length === 0 && (
-          <p className="p-6 font-sans text-sand/50">No suppliers yet.</p>
+          <p className="p-6 font-sans text-espresso/50">No suppliers yet.</p>
         )}
       </div>
     </div>

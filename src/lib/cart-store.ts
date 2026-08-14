@@ -8,7 +8,7 @@ export interface CartLine {
   productSlug: string;
   productName: string;
   size: string;
-  color: string;
+  color: string | null;
   unitPrice: number;
   image: string | null;
   quantity: number;

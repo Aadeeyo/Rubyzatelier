@@ -22,7 +22,7 @@ export function ProductCard({ product }: { product: ProductWithRelations }) {
   return (
     <motion.div whileHover={{ y: -6 }} transition={{ type: "spring", stiffness: 300 }}>
       <Link href={`/product/${product.slug}`} className="group block">
-        <div className="relative aspect-[4/5] overflow-hidden rounded-lg bg-ink-elevated">
+        <div className="relative aspect-[4/5] overflow-hidden rounded-lg bg-cream">
           {image ? (
             <img
               src={image.url}
@@ -30,21 +30,21 @@ export function ProductCard({ product }: { product: ProductWithRelations }) {
               className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
             />
           ) : (
-            <div className="flex h-full w-full items-center justify-center text-chrome-dark">
+            <div className="flex h-full w-full items-center justify-center text-cocoa">
               No image
             </div>
           )}
           {stock === 0 && (
-            <span className="absolute left-3 top-3 rounded-full bg-ink/80 px-3 py-1 text-xs uppercase tracking-wider text-sand">
+            <span className="absolute left-3 top-3 rounded-full bg-espresso/85 px-3 py-1 text-xs uppercase tracking-wider text-ivory">
               Sold out
             </span>
           )}
         </div>
         <div className="mt-3 flex items-baseline justify-between">
-          <h3 className="font-display text-lg text-sand group-hover:text-coral">
+          <h3 className="font-display text-lg text-espresso group-hover:text-terracotta">
             {product.name}
           </h3>
-          <span className="font-sans text-base text-chrome">
+          <span className="font-sans text-base text-cocoa">
             {formatNaira(price)}
           </span>
         </div>

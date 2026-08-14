@@ -8,6 +8,7 @@ import { slugify } from "@/lib/utils";
 import { isSupportedImageType, uploadProductImage } from "@/lib/storage";
 import { friendlyActionError } from "@/lib/errors";
 import { revalidateStorefront } from "@/lib/revalidate";
+import { nextStatusAfterStockChange } from "@/lib/product-status";
 
 const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
 
@@ -37,7 +38,7 @@ export async function uploadImage(formData: FormData) {
 
 const variantSchema = z.object({
   size: z.string().min(1, "size is required"),
-  color: z.string().min(1, "color is required"),
+  color: z.string().optional(),
   sku: z.string().min(1, "SKU is required"),
   priceOverride: z.number().int().positive().nullable().optional(),
   quantity: z.number().int().min(0),
@@ -47,11 +48,10 @@ const productSchema = z.object({
   name: z.string().min(2),
   slug: z.string().min(2).optional(),
   description: z.string().min(1),
-  department: z.enum(["WOMEN", "KIDS"]),
-  category: z.enum(["TOP", "DRESS", "JEANS", "TOP_BOTTOM"]),
+  collection: z.enum(["OFFICE", "SUNDAY", "DATE", "CELEBRATION"]),
   basePrice: z.number().int().positive(),
   imageUrl: z.string().min(1),
-  isPublished: z.boolean(),
+  status: z.enum(["DRAFT", "AVAILABLE"]),
   isFeatured: z.boolean(),
   variants: z.array(variantSchema).min(1, "at least one variant is required"),
 });
@@ -81,16 +81,15 @@ export async function createProduct(input: ProductInput) {
         name: data.name,
         slug,
         description: data.description,
-        department: data.department,
-        category: data.category,
+        collection: data.collection,
         basePrice: data.basePrice,
-        isPublished: data.isPublished,
+        status: data.status,
         isFeatured: data.isFeatured,
         images: { create: [{ url: data.imageUrl, position: 0 }] },
         variants: {
           create: data.variants.map((v) => ({
             size: v.size,
-            color: v.color,
+            color: v.color || null,
             sku: v.sku,
             priceOverride: v.priceOverride ?? null,
             inventory: { create: { quantity: v.quantity } },
@@ -137,10 +136,9 @@ export async function updateProductCore(
         name: data.name,
         slug,
         description: data.description,
-        department: data.department,
-        category: data.category,
+        collection: data.collection,
         basePrice: data.basePrice,
-        isPublished: data.isPublished,
+        status: data.status,
         isFeatured: data.isFeatured,
         images: {
           deleteMany: {},
@@ -171,12 +169,27 @@ export async function addVariant(productId: string, input: z.infer<typeof varian
       data: {
         productId,
         size: data.size,
-        color: data.color,
+        color: data.color || null,
         sku: data.sku,
         priceOverride: data.priceOverride ?? null,
         inventory: { create: { quantity: data.quantity } },
       },
     });
+
+    // A new variant with stock can revive a product the system had
+    // auto-archived for being out of stock.
+    const product = await prisma.product.findUniqueOrThrow({
+      where: { id: productId },
+      include: { variants: { include: { inventory: true } } },
+    });
+    const totalStock = product.variants.reduce(
+      (sum, v) => sum + (v.inventory?.quantity ?? 0),
+      0,
+    );
+    const nextStatus = nextStatusAfterStockChange(product.status, totalStock);
+    if (nextStatus) {
+      await prisma.product.update({ where: { id: productId }, data: { status: nextStatus } });
+    }
 
     revalidatePath(`/admin/products/${productId}`);
     revalidatePath("/admin/inventory");
@@ -189,7 +202,7 @@ export async function addVariant(productId: string, input: z.infer<typeof varian
 
 export async function updateVariantDetails(
   variantId: string,
-  input: { size: string; color: string; sku: string; priceOverride: number | null },
+  input: { size: string; color: string | null; sku: string; priceOverride: number | null },
 ) {
   await requireAdminSession();
   try {

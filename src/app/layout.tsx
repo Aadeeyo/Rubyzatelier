@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Playfair_Display, Cormorant_Garamond, Tangerine } from "next/font/google";
 import "./globals.css";
-import { SITE_URL, SITE_NAME, SITE_DESCRIPTION, SERVICE_AREAS } from "@/lib/site";
+import { SITE_URL, SITE_NAME, SITE_DESCRIPTION, SERVICE_AREAS, TAGLINE } from "@/lib/site";
 
 const playfair = Playfair_Display({
   variable: "--font-playfair",
@@ -24,20 +24,21 @@ const tangerine = Tangerine({
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: `${SITE_NAME} | Má rìn hò hò`,
+    default: `${SITE_NAME} | ${TAGLINE}`,
     template: `%s | ${SITE_NAME}`,
   },
   description: SITE_DESCRIPTION,
   keywords: [
     "Rubyzatelier",
-    "women's clothing Ogijo",
-    "kids clothing Ogijo",
+    "women's fashion Ogijo",
+    "elegant fashion Nigeria",
+    "workwear Nigeria",
+    "church outfits Nigeria",
     "fashion store Ogijo",
     "clothing store Itaoluwo",
     "clothing store Lukosi",
     "Ogun State fashion",
-    "tops dresses jeans Nigeria",
-    "adire clothing",
+    "affordable elegant fashion",
   ],
   authors: [{ name: SITE_NAME }],
   alternates: { canonical: "/" },
@@ -46,12 +47,12 @@ export const metadata: Metadata = {
     locale: "en_NG",
     url: SITE_URL,
     siteName: SITE_NAME,
-    title: `${SITE_NAME} | Má rìn hò hò`,
+    title: `${SITE_NAME} | ${TAGLINE}`,
     description: SITE_DESCRIPTION,
   },
   twitter: {
     card: "summary_large_image",
-    title: `${SITE_NAME} | Má rìn hò hò`,
+    title: `${SITE_NAME} | ${TAGLINE}`,
     description: SITE_DESCRIPTION,
   },
 };
@@ -84,7 +85,7 @@ export default function RootLayout({
       lang="en"
       className={`${playfair.variable} ${cormorant.variable} ${tangerine.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-ink text-sand font-sans">
+      <body className="min-h-full flex flex-col bg-ivory text-espresso font-sans">
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessJsonLd) }}

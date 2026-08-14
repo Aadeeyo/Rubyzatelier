@@ -6,6 +6,7 @@ import { prisma } from "@/lib/prisma";
 import { requireAdminSession } from "@/lib/auth";
 import { friendlyActionError } from "@/lib/errors";
 import { revalidateStorefront } from "@/lib/revalidate";
+import { nextStatusAfterStockChange } from "@/lib/product-status";
 
 const schema = z.object({
   variantId: z.string(),
@@ -27,7 +28,25 @@ export async function adjustInventory(input: z.infer<typeof schema>) {
       data: { quantity: data.quantity, reorderAt: data.reorderAt },
     });
 
+    const variant = await prisma.productVariant.findUniqueOrThrow({
+      where: { id: data.variantId },
+      select: { productId: true },
+    });
+    const product = await prisma.product.findUniqueOrThrow({
+      where: { id: variant.productId },
+      include: { variants: { include: { inventory: true } } },
+    });
+    const totalStock = product.variants.reduce(
+      (sum, v) => sum + (v.inventory?.quantity ?? 0),
+      0,
+    );
+    const nextStatus = nextStatusAfterStockChange(product.status, totalStock);
+    if (nextStatus) {
+      await prisma.product.update({ where: { id: variant.productId }, data: { status: nextStatus } });
+    }
+
     revalidatePath("/admin/inventory");
+    revalidatePath("/admin/products");
     revalidatePath("/admin");
     revalidateStorefront();
     return { ok: true as const };

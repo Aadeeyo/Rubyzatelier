@@ -16,7 +16,7 @@ export default async function EditProductPage({
 
   return (
     <div>
-      <h1 className="font-display text-3xl text-sand">{product.name}</h1>
+      <h1 className="font-display text-3xl text-espresso">{product.name}</h1>
       <div className="mt-8 max-w-3xl">
         <ProductForm
           mode="edit"
@@ -25,11 +25,10 @@ export default async function EditProductPage({
             name: product.name,
             slug: product.slug,
             description: product.description,
-            department: product.department,
-            category: product.category,
+            collection: product.collection,
             basePrice: product.basePrice,
             imageUrl: product.images[0]?.url ?? "/products/placeholder-1.svg",
-            isPublished: product.isPublished,
+            status: product.status,
             isFeatured: product.isFeatured,
           }}
           existingVariants={product.variants.map((v) => ({

@@ -1,38 +1,35 @@
 @import "tailwindcss";
+@plugin "@tailwindcss/typography";
 
 :root {
-  --background: #0b0b0d;
-  --foreground: #f4f2ee;
+  --background: #f8f5f0;
+  --foreground: #3e3026;
 
-  /* Rubyzatelier brand palette */
-  --color-ink: #0b0b0d;
-  --color-ink-soft: #16161a;
-  --color-ink-elevated: #1f1f24;
-  --color-chrome-light: #e4e5e8;
-  --color-chrome: #b6b9bf;
-  --color-chrome-dark: #7d8085;
-  --color-indigo: #2c3566;
-  --color-indigo-deep: #1a2047;
-  --color-rust: #b5502f;
-  --color-coral: #c1443a;
-  --color-sand: #ece5da;
+  /* Rubyzatelier brand palette — light (everything below the fold) */
+  --color-ivory: #f8f5f0;
+  --color-cream: #f3ede3;
+  --color-sand: #d8c7b0;
+  --color-cocoa: #a78665;
+  --color-espresso: #3e3026;
+  --color-terracotta: #b56b45;
+
+  /* Rubyzatelier brand palette — dark (hero only) */
+  --color-deep-espresso: #2b231e;
+  --color-charcoal: #1e1a17;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
 
-  --color-ink: var(--color-ink);
-  --color-ink-soft: var(--color-ink-soft);
-  --color-ink-elevated: var(--color-ink-elevated);
-  --color-chrome-light: var(--color-chrome-light);
-  --color-chrome: var(--color-chrome);
-  --color-chrome-dark: var(--color-chrome-dark);
-  --color-indigo: var(--color-indigo);
-  --color-indigo-deep: var(--color-indigo-deep);
-  --color-rust: var(--color-rust);
-  --color-coral: var(--color-coral);
+  --color-ivory: var(--color-ivory);
+  --color-cream: var(--color-cream);
   --color-sand: var(--color-sand);
+  --color-cocoa: var(--color-cocoa);
+  --color-espresso: var(--color-espresso);
+  --color-terracotta: var(--color-terracotta);
+  --color-deep-espresso: var(--color-deep-espresso);
+  --color-charcoal: var(--color-charcoal);
 
   --font-display: var(--font-playfair);
   --font-script: var(--font-tangerine);
@@ -45,22 +42,8 @@ body {
 }
 
 ::selection {
-  background: var(--color-rust);
-  color: var(--color-sand);
-}
-
-.text-gradient-chrome {
-  background: linear-gradient(
-    135deg,
-    var(--color-chrome-dark) 0%,
-    var(--color-chrome-light) 35%,
-    #ffffff 50%,
-    var(--color-chrome-light) 65%,
-    var(--color-chrome-dark) 100%
-  );
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background: var(--color-terracotta);
+  color: var(--color-ivory);
 }
 
 .grain-overlay {

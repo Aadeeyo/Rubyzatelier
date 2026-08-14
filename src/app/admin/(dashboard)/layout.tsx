@@ -7,6 +7,7 @@ import { logoutAdmin } from "../login/actions";
 const NAV = [
   { href: "/admin", label: "Dashboard" },
   { href: "/admin/products", label: "Products" },
+  { href: "/admin/journal", label: "Journal" },
   { href: "/admin/inventory", label: "Inventory" },
   { href: "/admin/procurement", label: "Procurement" },
   { href: "/admin/suppliers", label: "Suppliers" },
@@ -22,12 +23,12 @@ export default async function AdminDashboardLayout({
   if (!session) redirect("/admin/login");
 
   return (
-    <div className="flex min-h-screen bg-ink">
-      <aside className="flex w-64 flex-shrink-0 flex-col border-r border-white/10 bg-ink-soft px-5 py-6">
-        <span className="font-script text-gradient-chrome text-3xl">
+    <div className="flex min-h-screen bg-ivory">
+      <aside className="flex w-64 flex-shrink-0 flex-col border-r border-cocoa/15 bg-cream px-5 py-6">
+        <span className="font-script text-terracotta text-3xl">
           Rubyzatelier
         </span>
-        <span className="mt-1 font-sans text-xs uppercase tracking-[0.3em] text-chrome">
+        <span className="mt-1 font-sans text-xs uppercase tracking-[0.3em] text-cocoa">
           Admin
         </span>
 
@@ -36,20 +37,20 @@ export default async function AdminDashboardLayout({
             <Link
               key={item.href}
               href={item.href}
-              className="rounded-lg px-3 py-2 font-sans text-lg text-sand/70 transition-colors hover:bg-white/5 hover:text-coral"
+              className="rounded-lg px-3 py-2 font-sans text-lg text-espresso/70 transition-colors hover:bg-cocoa/10 hover:text-terracotta"
             >
               {item.label}
             </Link>
           ))}
         </nav>
 
-        <div className="mt-auto border-t border-white/10 pt-4">
-          <p className="font-sans text-sm text-sand/50">{session.name}</p>
-          <p className="font-sans text-xs uppercase tracking-widest text-chrome-dark">
+        <div className="mt-auto border-t border-cocoa/15 pt-4">
+          <p className="font-sans text-sm text-espresso/50">{session.name}</p>
+          <p className="font-sans text-xs uppercase tracking-widest text-cocoa">
             {session.role}
           </p>
           <form action={logoutAdmin}>
-            <button className="mt-3 font-sans text-sm text-sand/40 hover:text-coral">
+            <button className="mt-3 font-sans text-sm text-espresso/40 hover:text-terracotta">
               Sign out
             </button>
           </form>
@@ -57,7 +58,7 @@ export default async function AdminDashboardLayout({
       </aside>
 
       <main className="flex-1 overflow-y-auto px-8 py-8">{children}</main>
-      <Toaster theme="dark" richColors position="top-right" />
+      <Toaster theme="light" richColors position="top-right" />
     </div>
   );
 }

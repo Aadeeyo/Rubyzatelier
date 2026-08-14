@@ -9,7 +9,7 @@ import { useCartStore } from "@/lib/cart-store";
 interface VariantOption {
   id: string;
   size: string;
-  color: string;
+  color: string | null;
   priceOverride: number | null;
   quantity: number;
 }
@@ -35,16 +35,21 @@ export function AddToCartForm({
     [variants],
   );
   const colors = useMemo(
-    () => Array.from(new Set(variants.map((v) => v.color))),
+    () =>
+      Array.from(
+        new Set(variants.map((v) => v.color).filter((c): c is string => Boolean(c))),
+      ),
     [variants],
   );
 
   const [size, setSize] = useState(sizes[0] ?? "");
-  const [color, setColor] = useState(colors[0] ?? "");
+  const [color, setColor] = useState<string | null>(colors[0] ?? null);
   const [quantity, setQuantity] = useState(1);
   const [justAdded, setJustAdded] = useState(false);
 
-  const variant = variants.find((v) => v.size === size && v.color === color);
+  const variant = variants.find(
+    (v) => v.size === size && (colors.length === 0 || v.color === color),
+  );
   const price = variant?.priceOverride ?? basePrice;
   const inStock = (variant?.quantity ?? 0) > 0;
 
@@ -71,11 +76,11 @@ export function AddToCartForm({
 
   return (
     <div className="flex flex-col gap-6">
-      <p className="font-sans text-3xl text-chrome-light">{formatNaira(price)}</p>
+      <p className="font-sans text-3xl text-espresso">{formatNaira(price)}</p>
 
       {sizes.length > 0 && (
         <div>
-          <span className="font-sans text-sm uppercase tracking-widest text-sand/60">
+          <span className="font-sans text-sm uppercase tracking-widest text-espresso/60">
             Size
           </span>
           <div className="mt-2 flex flex-wrap gap-2">
@@ -86,8 +91,8 @@ export function AddToCartForm({
                 className={cn(
                   "rounded-full border px-4 py-2 font-sans text-base transition-colors",
                   size === s
-                    ? "border-coral bg-coral/10 text-coral"
-                    : "border-white/15 text-sand/70 hover:border-coral",
+                    ? "border-terracotta bg-terracotta/10 text-terracotta"
+                    : "border-cocoa/25 text-espresso/70 hover:border-terracotta",
                 )}
               >
                 {s}
@@ -99,7 +104,7 @@ export function AddToCartForm({
 
       {colors.length > 0 && (
         <div>
-          <span className="font-sans text-sm uppercase tracking-widest text-sand/60">
+          <span className="font-sans text-sm uppercase tracking-widest text-espresso/60">
             Color
           </span>
           <div className="mt-2 flex flex-wrap gap-2">
@@ -110,8 +115,8 @@ export function AddToCartForm({
                 className={cn(
                   "rounded-full border px-4 py-2 font-sans text-base transition-colors",
                   color === c
-                    ? "border-coral bg-coral/10 text-coral"
-                    : "border-white/15 text-sand/70 hover:border-coral",
+                    ? "border-terracotta bg-terracotta/10 text-terracotta"
+                    : "border-cocoa/25 text-espresso/70 hover:border-terracotta",
                 )}
               >
                 {c}
@@ -122,16 +127,16 @@ export function AddToCartForm({
       )}
 
       <div className="flex items-center gap-4">
-        <div className="flex items-center rounded-full border border-white/15">
+        <div className="flex items-center rounded-full border border-cocoa/25">
           <button
-            className="px-4 py-2 text-sand/70 hover:text-coral"
+            className="px-4 py-2 text-espresso/70 hover:text-terracotta"
             onClick={() => setQuantity((q) => Math.max(1, q - 1))}
           >
             −
           </button>
           <span className="w-8 text-center font-sans text-lg">{quantity}</span>
           <button
-            className="px-4 py-2 text-sand/70 hover:text-coral"
+            className="px-4 py-2 text-espresso/70 hover:text-terracotta"
             onClick={() =>
               setQuantity((q) => Math.min(variant?.quantity ?? 1, q + 1))
             }
@@ -140,7 +145,7 @@ export function AddToCartForm({
           </button>
         </div>
 
-        <span className="font-sans text-sm text-sand/50">
+        <span className="font-sans text-sm text-espresso/50">
           {variant
             ? inStock
               ? `${variant.quantity} in stock`
@@ -152,7 +157,7 @@ export function AddToCartForm({
       <button
         onClick={handleAdd}
         disabled={!variant || !inStock}
-        className="relative overflow-hidden rounded-full bg-coral px-8 py-4 font-sans text-lg text-sand transition-transform hover:scale-[1.02] disabled:cursor-not-allowed disabled:opacity-40"
+        className="relative overflow-hidden rounded-full bg-terracotta px-8 py-4 font-sans text-lg text-ivory transition-transform hover:scale-[1.02] disabled:cursor-not-allowed disabled:opacity-40"
       >
         <AnimatePresence mode="wait">
           <motion.span
@@ -170,7 +175,7 @@ export function AddToCartForm({
 
       <button
         onClick={() => router.push("/cart")}
-        className="font-sans text-base text-chrome underline underline-offset-4 hover:text-coral"
+        className="font-sans text-base text-cocoa underline underline-offset-4 hover:text-terracotta"
       >
         View cart
       </button>

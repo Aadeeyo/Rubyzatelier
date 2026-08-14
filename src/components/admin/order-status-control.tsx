@@ -16,6 +16,19 @@ const STATUSES = [
   "REFUNDED",
 ] as const;
 
+// Display labels matching the blueprint's order status flow: Pending Payment
+// → Payment Confirmed → Preparing Order → Ready for Pickup / Shipped → Delivered.
+const STATUS_LABELS: Record<(typeof STATUSES)[number], string> = {
+  PENDING_PAYMENT: "Pending Payment",
+  PAID: "Payment Confirmed",
+  PROCESSING: "Preparing Order",
+  PICKED: "Ready for Pickup",
+  DISPATCHED: "Shipped",
+  DELIVERED: "Delivered",
+  CANCELLED: "Cancelled",
+  REFUNDED: "Refunded",
+};
+
 export function OrderStatusControl({
   orderId,
   currentStatus,
@@ -45,7 +58,7 @@ export function OrderStatusControl({
     } else if (result.emailSent === false) {
       toast.error(`Order marked paid, but the email was not sent: ${result.emailReason}`);
     } else {
-      toast.success(`Order marked ${next.replaceAll("_", " ").toLowerCase()}`);
+      toast.success(`Order marked ${STATUS_LABELS[next as (typeof STATUSES)[number]].toLowerCase()}`);
     }
     router.refresh();
   }
@@ -56,15 +69,15 @@ export function OrderStatusControl({
         value={status}
         onChange={(e) => handleChange(e.target.value)}
         disabled={saving}
-        className="rounded-lg border border-white/15 bg-ink-elevated px-4 py-2 text-sand outline-none focus:border-coral"
+        className="rounded-lg border border-cocoa/25 bg-ivory px-4 py-2 text-espresso outline-none focus:border-terracotta"
       >
         {STATUSES.map((s) => (
           <option key={s} value={s}>
-            {s.replaceAll("_", " ")}
+            {STATUS_LABELS[s]}
           </option>
         ))}
       </select>
-      {saving && <span className="font-sans text-sm text-sand/50">Saving…</span>}
+      {saving && <span className="font-sans text-sm text-espresso/50">Saving…</span>}
     </div>
   );
 }

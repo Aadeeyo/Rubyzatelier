@@ -3,7 +3,9 @@ export const SITE_URL = "https://rubyzatelier.netlify.app";
 export const SITE_NAME = "Rubyzatelier";
 
 export const SITE_DESCRIPTION =
-  "Rubyzatelier — tops, dresses and jeans for women and kids, based in Ogijo, Ogun State, serving Ogijo, Itaoluwo, Lukosi and beyond.";
+  "Rubyzatelier — bringing elegant fashion closer to home. Affordable, clean, functional fashion for women, curated by moment: Office, Sunday, Date and Celebration. Based in Ogijo, Ogun State, serving Ogijo, Itaoluwo, Lukosi and beyond.";
+
+export const TAGLINE = "Bringing elegant fashion closer to home.";
 
 // Local areas served, used for local SEO copy and structured data.
 export const SERVICE_AREAS = ["Ogijo", "Itaoluwo", "Lukosi"];

@@ -9,13 +9,13 @@ export default async function NewPurchaseOrderPage() {
 
   return (
     <div>
-      <h1 className="font-display text-3xl text-sand">New Purchase Order</h1>
+      <h1 className="font-display text-3xl text-espresso">New Purchase Order</h1>
       <div className="mt-8">
         <PurchaseOrderForm
           suppliers={suppliers}
           variants={variants.map((v) => ({
             id: v.id,
-            label: `${v.product.name} — ${v.size}/${v.color} (${v.sku})`,
+            label: `${v.product.name} — ${v.size}${v.color ? `/${v.color}` : ""} (${v.sku})`,
           }))}
         />
       </div>

@@ -16,7 +16,7 @@ export function InventoryRow({
   variantId: string;
   productName: string;
   size: string;
-  color: string;
+  color: string | null;
   sku: string;
   initialQuantity: number;
   initialReorderAt: number;
@@ -42,12 +42,13 @@ export function InventoryRow({
   }
 
   return (
-    <tr className="border-b border-white/5 last:border-0">
-      <td className="px-5 py-3 text-sand">{productName}</td>
-      <td className="px-5 py-3 text-sand/70">
-        {size} / {color}
+    <tr className="border-b border-cocoa/10 last:border-0">
+      <td className="px-5 py-3 text-espresso">{productName}</td>
+      <td className="px-5 py-3 text-espresso/70">
+        {size}
+        {color ? ` / ${color}` : ""}
       </td>
-      <td className="px-5 py-3 text-sand/50">{sku}</td>
+      <td className="px-5 py-3 text-espresso/50">{sku}</td>
       <td className="px-5 py-3">
         <input
           type="number"
@@ -56,7 +57,7 @@ export function InventoryRow({
             setQuantity(parseInt(e.target.value || "0", 10));
             setDirty(true);
           }}
-          className="w-20 rounded-lg border border-white/15 bg-ink-elevated px-2 py-1 text-sand outline-none focus:border-coral"
+          className="w-20 rounded-lg border border-cocoa/25 bg-ivory px-2 py-1 text-espresso outline-none focus:border-terracotta"
         />
       </td>
       <td className="px-5 py-3">
@@ -67,12 +68,12 @@ export function InventoryRow({
             setReorderAt(parseInt(e.target.value || "0", 10));
             setDirty(true);
           }}
-          className="w-20 rounded-lg border border-white/15 bg-ink-elevated px-2 py-1 text-sand outline-none focus:border-coral"
+          className="w-20 rounded-lg border border-cocoa/25 bg-ivory px-2 py-1 text-espresso outline-none focus:border-terracotta"
         />
       </td>
       <td className="px-5 py-3">
         {lowStock && (
-          <span className="rounded-full bg-coral/10 px-3 py-1 text-xs text-coral">
+          <span className="rounded-full bg-terracotta/10 px-3 py-1 text-xs text-terracotta">
             Low stock
           </span>
         )}
@@ -81,7 +82,7 @@ export function InventoryRow({
         <button
           onClick={save}
           disabled={!dirty || saving}
-          className="rounded-full border border-white/15 px-4 py-1 font-sans text-sm text-sand/70 hover:border-coral hover:text-coral disabled:opacity-30"
+          className="rounded-full border border-cocoa/25 px-4 py-1 font-sans text-sm text-espresso/70 hover:border-terracotta hover:text-terracotta disabled:opacity-30"
         >
           {saving ? "Saving…" : "Save"}
         </button>

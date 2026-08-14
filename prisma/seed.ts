@@ -17,7 +17,7 @@ async function main() {
         passwordHash: await hashPassword("ChangeMe123!"),
       },
     });
-    console.log(`Created admin user: ${adminEmail} / adire2026`);
+    console.log(`Created admin user: ${adminEmail} / ChangeMe123!`);
   }
 
   let supplier = await prisma.supplier.findFirst({ where: { name: "Abeokuta Dye Works" } });
@@ -35,111 +35,76 @@ async function main() {
 
   const products = [
     {
-      name: "Indigo Wrap Dress",
+      name: "The Sterling Dress",
       description:
-        "A hand-dyed Adire wrap dress in deep indigo with a soft rust starburst pattern. Tailored waist, flowing skirt.",
-      department: "WOMEN" as const,
-      category: "DRESS" as const,
-      basePrice: 4500000,
-      image: "/products/placeholder-1.svg",
-      variants: [
-        { size: "S", color: "Indigo", sku: "IWD-S-IND" },
-        { size: "M", color: "Indigo", sku: "IWD-M-IND" },
-        { size: "L", color: "Indigo", sku: "IWD-L-IND" },
-      ],
-    },
-    {
-      name: "Coral Sunburst Top",
-      description:
-        "Lightweight cotton top with a coral and cream tie-dye burst, relaxed fit, perfect for warm days.",
-      department: "WOMEN" as const,
-      category: "TOP" as const,
-      basePrice: 1800000,
-      image: "/products/placeholder-2.svg",
-      variants: [
-        { size: "S", color: "Coral", sku: "CST-S-COR" },
-        { size: "M", color: "Coral", sku: "CST-M-COR" },
-        { size: "L", color: "Coral", sku: "CST-L-COR" },
-      ],
-    },
-    {
-      name: "Rust Adire Jeans",
-      description:
-        "Straight-leg denim overdyed with a rust and indigo Adire wash — no two pairs are alike.",
-      department: "WOMEN" as const,
-      category: "JEANS" as const,
-      basePrice: 3200000,
-      image: "/products/placeholder-4.svg",
-      variants: [
-        { size: "28", color: "Rust Wash", sku: "RAJ-28-RUS" },
-        { size: "30", color: "Rust Wash", sku: "RAJ-30-RUS" },
-        { size: "32", color: "Rust Wash", sku: "RAJ-32-RUS" },
-      ],
-    },
-    {
-      name: "Little Rin Dress",
-      description:
-        "A playful kids' Adire dress in soft indigo and cream, easy-care cotton, twirl-approved.",
-      department: "KIDS" as const,
-      category: "DRESS" as const,
-      basePrice: 2200000,
-      image: "/products/placeholder-3.svg",
-      variants: [
-        { size: "3-4Y", color: "Indigo Cream", sku: "LRD-34-IC" },
-        { size: "5-6Y", color: "Indigo Cream", sku: "LRD-56-IC" },
-        { size: "7-8Y", color: "Indigo Cream", sku: "LRD-78-IC" },
-      ],
-    },
-    {
-      name: "Mini Hoho Top",
-      description: "Matching mini version of our signature tie-dye top, for the littlest trendsetters.",
-      department: "KIDS" as const,
-      category: "TOP" as const,
+        "Designed for women who want effortless elegance from the office to after-work plans. The Sterling Dress combines comfort, structure, and femininity in one versatile piece.",
+      collection: "OFFICE" as const,
       basePrice: 1200000,
+      image: "/products/placeholder-1.svg",
+      sizes: ["Small", "Medium", "Large"],
+    },
+    {
+      name: "The Ledger Blouse",
+      description:
+        "A tailored button-through blouse in a soft crepe finish — sharp enough for meetings, soft enough for the walk home.",
+      collection: "OFFICE" as const,
+      basePrice: 850000,
+      image: "/products/placeholder-2.svg",
+      sizes: ["Small", "Medium", "Large"],
+    },
+    {
+      name: "The Fellowship Dress",
+      description:
+        "A feminine midi dress with a modest neckline and gentle flare, designed for worship mornings and the fellowship after.",
+      collection: "SUNDAY" as const,
+      basePrice: 1350000,
+      image: "/products/placeholder-3.svg",
+      sizes: ["Small", "Medium", "Large"],
+    },
+    {
+      name: "The Grace Wrap Top",
+      description:
+        "A soft wrap top with a covered shoulder and delicate tie waist — polished, comfortable, and easy to move in all morning.",
+      collection: "SUNDAY" as const,
+      basePrice: 750000,
+      image: "/products/placeholder-4.svg",
+      sizes: ["Small", "Medium", "Large"],
+    },
+    {
+      name: "The Rendezvous Set",
+      description:
+        "A fitted top-and-skirt set in a fluid fabric that moves with you — effortless for coffee, dinner, or the conversation that runs long.",
+      collection: "DATE" as const,
+      basePrice: 1450000,
       image: "/products/placeholder-5.svg",
-      variants: [
-        { size: "2-3Y", color: "Sunset", sku: "MHT-23-SUN" },
-        { size: "4-5Y", color: "Sunset", sku: "MHT-45-SUN" },
-        { size: "6-7Y", color: "Sunset", sku: "MHT-67-SUN" },
-      ],
+      sizes: ["Small", "Medium", "Large"],
     },
     {
-      name: "Junior Adire Jeans",
-      description: "Durable, soft-wash denim for kids with a subtle Adire overdye detail on the pockets.",
-      department: "KIDS" as const,
-      category: "JEANS" as const,
-      basePrice: 1600000,
+      name: "The Evening Jeans",
+      description:
+        "A high-waisted straight-leg jean with a subtle sheen — dressed up with heels, dressed down with flats.",
+      collection: "DATE" as const,
+      basePrice: 950000,
       image: "/products/placeholder-6.svg",
-      variants: [
-        { size: "4-5Y", color: "Indigo", sku: "JAJ-45-IND" },
-        { size: "6-7Y", color: "Indigo", sku: "JAJ-67-IND" },
-        { size: "8-9Y", color: "Indigo", sku: "JAJ-89-IND" },
-      ],
+      sizes: ["28", "30", "32"],
     },
     {
-      name: "Sand Coast Top",
-      description: "Breezy sand and indigo tie-dye blouse with tie-front detail.",
-      department: "WOMEN" as const,
-      category: "TOP" as const,
-      basePrice: 2100000,
+      name: "The Ruby Bloom Dress",
+      description:
+        "A statement occasion dress with a fitted silhouette and a bold, blooming print — made for the moments worth dressing up for.",
+      collection: "CELEBRATION" as const,
+      basePrice: 1500000,
       image: "/products/placeholder-7.svg",
-      variants: [
-        { size: "S", color: "Sand", sku: "SCT-S-SAN" },
-        { size: "M", color: "Sand", sku: "SCT-M-SAN" },
-      ],
+      sizes: ["Small", "Medium", "Large"],
     },
     {
-      name: "Ruby Bloom Dress",
-      description: "Statement occasion dress with a bold rust-and-indigo bloom pattern across a fitted silhouette.",
-      department: "WOMEN" as const,
-      category: "DRESS" as const,
-      basePrice: 5600000,
+      name: "The Toast Gown",
+      description:
+        "A floor-length column gown in a rich jewel tone, finished with a soft draped back — for weddings, galas, and everything worth celebrating.",
+      collection: "CELEBRATION" as const,
+      basePrice: 1500000,
       image: "/products/placeholder-8.svg",
-      variants: [
-        { size: "S", color: "Ruby Bloom", sku: "RBD-S-RB" },
-        { size: "M", color: "Ruby Bloom", sku: "RBD-M-RB" },
-        { size: "L", color: "Ruby Bloom", sku: "RBD-L-RB" },
-      ],
+      sizes: ["Small", "Medium", "Large"],
     },
   ];
 
@@ -152,25 +117,90 @@ async function main() {
     const existing = await prisma.product.findUnique({ where: { slug } });
     if (existing) continue;
 
+    const skuPrefix = p.name
+      .replace(/^The\s+/i, "")
+      .split(" ")
+      .map((w) => w[0])
+      .join("")
+      .toUpperCase();
+
     await prisma.product.create({
       data: {
         name: p.name,
         slug,
         description: p.description,
-        department: p.department,
-        category: p.category,
+        collection: p.collection,
         basePrice: p.basePrice,
-        isPublished: true,
+        status: "AVAILABLE",
         isFeatured: i < 4,
         images: { create: [{ url: p.image, position: 0 }] },
         variants: {
-          create: p.variants.map((v) => ({
-            size: v.size,
-            color: v.color,
-            sku: v.sku,
+          create: p.sizes.map((size, sizeIndex) => ({
+            size,
+            sku: `${skuPrefix}-${size.slice(0, 2).toUpperCase()}-${sizeIndex}`,
             inventory: { create: { quantity: 12, reorderAt: 4 } },
           })),
         },
+      },
+    });
+  }
+
+  const journalEntries = [
+    {
+      title: "Why Elegant Fashion Shouldn't Require a Long Trip",
+      slug: "why-elegant-fashion-shouldnt-require-a-long-trip",
+      excerpt:
+        "For a long time, finding beautiful clothing meant leaving home. Here's why we built Rubyzatelier to change that.",
+      relatedCollection: null,
+      content: `For as long as we can remember, finding elegant, celebration-worthy fashion has meant traveling — into the city, across town, sometimes further.
+
+We started noticing that the women around us were facing the same challenge. Friends. Colleagues. Women building careers, preparing for church, attending weddings, in relationships — everyone was investing extra time and money just to find clothing that reflected who they were.
+
+Rubyzatelier exists because we believe women outside major fashion hubs deserve affordable elegance without sacrificing time and money. Clean, functional, beautiful fashion — brought closer to home.`,
+      tags: ["brand-story"],
+    },
+    {
+      title: "How to Build a Work Wardrobe Without Overspending",
+      slug: "how-to-build-a-work-wardrobe-without-overspending",
+      excerpt:
+        "A polished, professional wardrobe doesn't have to come with a designer price tag. Here's where to start.",
+      relatedCollection: "OFFICE" as const,
+      content: `Building a work wardrobe you love shouldn't mean buying everything at once — or spending everything you have.
+
+Start with a few versatile pieces that layer easily: a tailored dress, a structured blouse, and one statement piece you can dress up or down. From there, build outward slowly, choosing pieces that mix and match rather than one-off outfits.
+
+Our Office Edit was designed exactly for this — elegant workwear for ambitious women, priced so building a wardrobe you're proud of doesn't mean overspending to get there.`,
+      tags: ["office-edit", "style-guide"],
+    },
+    {
+      title: "What to Wear to Church This Sunday",
+      slug: "what-to-wear-to-church-this-sunday",
+      excerpt:
+        "Soft, modest, and put-together — a few simple ideas for dressing for worship and the fellowship after.",
+      relatedCollection: "SUNDAY" as const,
+      content: `Sunday mornings call for something soft, modest, and easy to move in — from the service, into fellowship, and through whatever the rest of the day brings.
+
+A midi dress with a covered shoulder is always a safe, elegant choice. If you prefer separates, a wrap top paired with a full skirt gives you the same grace with a little more flexibility.
+
+Our Sunday Edit was designed for exactly this rhythm — feminine pieces made for worship and the fellowship that follows.`,
+      tags: ["sunday-edit", "style-guide"],
+    },
+  ];
+
+  for (const entry of journalEntries) {
+    const existing = await prisma.journal.findUnique({ where: { slug: entry.slug } });
+    if (existing) continue;
+
+    await prisma.journal.create({
+      data: {
+        title: entry.title,
+        slug: entry.slug,
+        excerpt: entry.excerpt,
+        content: entry.content,
+        tags: entry.tags,
+        relatedCollection: entry.relatedCollection,
+        status: "PUBLISHED",
+        publishedAt: new Date("2026-08-01T09:00:00.000Z"),
       },
     });
   }

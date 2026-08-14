@@ -5,14 +5,23 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ShoppingBag, Menu, X } from "lucide-react";
 import { Logo } from "@/components/logo";
+import { SearchBar } from "@/components/search-bar";
 import { useCartStore, cartCount } from "@/lib/cart-store";
 
-const NAV_LINKS = [
-  { href: "/shop/women", label: "Women" },
-  { href: "/shop/kids", label: "Kids" },
-  { href: "/shop", label: "All Pieces" },
-  { href: "/about", label: "Our Story" },
+const EDIT_LINKS = [
+  { href: "/shop/office", label: "Office Edit" },
+  { href: "/shop/sunday", label: "Sunday Edit" },
+  { href: "/shop/date", label: "Date Edit" },
+  { href: "/shop/celebration", label: "Celebration Edit" },
 ];
+
+const INFO_LINKS = [
+  { href: "/about", label: "Our Story" },
+  { href: "/journal", label: "Journal" },
+  { href: "/contact", label: "Contact" },
+];
+
+const NAV_LINKS = [...EDIT_LINKS, ...INFO_LINKS];
 
 export function Navbar() {
   const [open, setOpen] = useState(false);
@@ -20,49 +29,62 @@ export function Navbar() {
   const count = cartCount(lines);
 
   return (
-    <header className="sticky top-0 z-30 border-b border-white/10 bg-ink/80 backdrop-blur-md">
+    <header className="sticky top-0 z-30 border-b border-cocoa/15 bg-ivory/90 backdrop-blur-md">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-3 sm:px-8">
         <button
-          className="text-chrome-light sm:hidden"
+          className="text-espresso sm:hidden"
           onClick={() => setOpen((o) => !o)}
           aria-label="Toggle menu"
         >
           {open ? <X size={22} /> : <Menu size={22} />}
         </button>
 
-        <Logo className="sm:items-start" />
+        <Logo className="sm:items-start" tagline={false} />
 
-        <nav className="hidden items-center gap-8 sm:flex">
-          {NAV_LINKS.map((link) => (
+        <nav className="hidden items-center gap-6 sm:flex lg:gap-8">
+          {EDIT_LINKS.map((link) => (
             <Link
               key={link.href}
               href={link.href}
-              className="font-sans text-lg tracking-wide text-sand/80 transition-colors hover:text-coral"
+              className="font-sans text-lg tracking-wide text-espresso/75 transition-colors hover:text-terracotta"
+            >
+              {link.label}
+            </Link>
+          ))}
+          <span className="h-5 w-px bg-cocoa/25" aria-hidden="true" />
+          {INFO_LINKS.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              className="font-sans text-lg tracking-wide text-espresso/75 transition-colors hover:text-terracotta"
             >
               {link.label}
             </Link>
           ))}
         </nav>
 
-        <Link
-          href="/cart"
-          className="relative flex items-center text-chrome-light transition-colors hover:text-coral"
-          aria-label="Cart"
-        >
-          <ShoppingBag size={22} />
-          <AnimatePresence>
-            {count > 0 && (
-              <motion.span
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                exit={{ scale: 0 }}
-                className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-coral text-[0.65rem] font-semibold text-sand"
-              >
-                {count}
-              </motion.span>
-            )}
-          </AnimatePresence>
-        </Link>
+        <div className="flex items-center gap-4">
+          <SearchBar />
+          <Link
+            href="/cart"
+            className="relative flex items-center text-espresso transition-colors hover:text-terracotta"
+            aria-label="Cart"
+          >
+            <ShoppingBag size={22} />
+            <AnimatePresence>
+              {count > 0 && (
+                <motion.span
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  exit={{ scale: 0 }}
+                  className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-terracotta text-[0.65rem] font-semibold text-ivory"
+                >
+                  {count}
+                </motion.span>
+              )}
+            </AnimatePresence>
+          </Link>
+        </div>
       </div>
 
       <AnimatePresence>
@@ -71,15 +93,22 @@ export function Navbar() {
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            className="overflow-hidden border-t border-white/10 sm:hidden"
+            className="overflow-hidden border-t border-cocoa/15 sm:hidden"
           >
             <div className="flex flex-col gap-1 px-5 py-4">
+              <Link
+                href="/search"
+                onClick={() => setOpen(false)}
+                className="py-2 font-sans text-lg text-espresso/80 hover:text-terracotta"
+              >
+                Search
+              </Link>
               {NAV_LINKS.map((link) => (
                 <Link
                   key={link.href}
                   href={link.href}
                   onClick={() => setOpen(false)}
-                  className="py-2 font-sans text-lg text-sand/80 hover:text-coral"
+                  className="py-2 font-sans text-lg text-espresso/80 hover:text-terracotta"
                 >
                   {link.label}
                 </Link>

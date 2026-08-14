@@ -39,11 +39,11 @@ export function ReceiveStockRow({
   }
 
   return (
-    <tr className="border-b border-white/5 last:border-0">
-      <td className="px-5 py-3 text-sand">{productLabel}</td>
-      <td className="px-5 py-3 text-sand/70">{(unitCost / 100).toLocaleString()}</td>
-      <td className="px-5 py-3 text-sand/70">{quantityOrdered}</td>
-      <td className="px-5 py-3 text-sand/70">{quantityReceived}</td>
+    <tr className="border-b border-cocoa/10 last:border-0">
+      <td className="px-5 py-3 text-espresso">{productLabel}</td>
+      <td className="px-5 py-3 text-espresso/70">{(unitCost / 100).toLocaleString()}</td>
+      <td className="px-5 py-3 text-espresso/70">{quantityOrdered}</td>
+      <td className="px-5 py-3 text-espresso/70">{quantityReceived}</td>
       <td className="px-5 py-3">
         {remaining > 0 ? (
           <div className="flex items-center gap-2">
@@ -51,18 +51,18 @@ export function ReceiveStockRow({
               type="number"
               value={amount}
               onChange={(e) => setAmount(e.target.value)}
-              className="w-20 rounded-lg border border-white/15 bg-ink-elevated px-2 py-1 text-sand outline-none focus:border-coral"
+              className="w-20 rounded-lg border border-cocoa/25 bg-ivory px-2 py-1 text-espresso outline-none focus:border-terracotta"
             />
             <button
               onClick={handleReceive}
               disabled={saving}
-              className="rounded-full border border-white/15 px-4 py-1 font-sans text-sm text-sand/70 hover:border-coral hover:text-coral disabled:opacity-30"
+              className="rounded-full border border-cocoa/25 px-4 py-1 font-sans text-sm text-espresso/70 hover:border-terracotta hover:text-terracotta disabled:opacity-30"
             >
               {saving ? "…" : "Receive"}
             </button>
           </div>
         ) : (
-          <span className="text-green-400">Complete</span>
+          <span className="text-green-700">Complete</span>
         )}
       </td>
     </tr>

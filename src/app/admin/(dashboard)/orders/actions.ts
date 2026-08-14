@@ -6,7 +6,7 @@ import { prisma } from "@/lib/prisma";
 import { requireAdminSession } from "@/lib/auth";
 import { friendlyActionError } from "@/lib/errors";
 import { revalidateStorefront } from "@/lib/revalidate";
-import { sendDispatchEmail, sendPaymentConfirmedEmail } from "@/lib/email";
+import { sendDispatchEmail, sendPaymentConfirmedEmail, sendReadyForPickupEmail } from "@/lib/email";
 
 const statuses = [
   "PENDING_PAYMENT",
@@ -161,5 +161,43 @@ export async function dispatchOrder(input: z.infer<typeof dispatchSchema>) {
     return { ok: true as const, emailSent: emailResult.sent, emailReason: emailResult.reason };
   } catch (err) {
     return { ok: false as const, error: friendlyActionError(err, "Could not save dispatch details.") };
+  }
+}
+
+export async function markReadyForPickup(orderId: string) {
+  await requireAdminSession();
+
+  const order = await prisma.order.findUnique({
+    where: { id: orderId },
+    include: { items: { include: { variant: { include: { product: true } } } }, address: true },
+  });
+  if (!order) return { ok: false as const, error: "Order not found." };
+
+  try {
+    await prisma.order.update({ where: { id: orderId }, data: { status: "PICKED" } });
+
+    let emailResult: { sent: boolean; reason?: string } = {
+      sent: false,
+      reason: "No email address on file for this order.",
+    };
+
+    if (order.guestEmail) {
+      emailResult = await sendReadyForPickupEmail({
+        to: order.guestEmail,
+        customerName: order.address?.fullName ?? "there",
+        orderId: order.id,
+        items: order.items.map((i) => ({
+          name: i.variant.product.name,
+          quantity: i.quantity,
+        })),
+      });
+    }
+
+    revalidatePath(`/admin/orders/${order.id}`);
+    revalidatePath("/admin/orders");
+    revalidatePath("/admin");
+    return { ok: true as const, emailSent: emailResult.sent, emailReason: emailResult.reason };
+  } catch (err) {
+    return { ok: false as const, error: friendlyActionError(err, "Could not update order.") };
   }
 }

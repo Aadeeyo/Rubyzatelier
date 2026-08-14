@@ -35,14 +35,14 @@ export function PurchaseOrderStatusActions({
       <button
         onClick={() => update("ORDERED")}
         disabled={pending}
-        className="rounded-full bg-coral px-6 py-2 font-sans text-sand hover:scale-105 disabled:opacity-50"
+        className="rounded-full bg-terracotta px-6 py-2 font-sans text-ivory hover:scale-105 disabled:opacity-50"
       >
         Mark as ordered
       </button>
       <button
         onClick={() => update("CANCELLED")}
         disabled={pending}
-        className="rounded-full border border-white/15 px-6 py-2 font-sans text-sand/70 hover:border-coral hover:text-coral disabled:opacity-50"
+        className="rounded-full border border-cocoa/25 px-6 py-2 font-sans text-espresso/70 hover:border-terracotta hover:text-terracotta disabled:opacity-50"
       >
         Cancel
       </button>

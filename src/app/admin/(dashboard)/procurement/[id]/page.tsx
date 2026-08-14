@@ -4,11 +4,11 @@ import { ReceiveStockRow } from "@/components/admin/receive-stock-row";
 import { PurchaseOrderStatusActions } from "@/components/admin/po-status-actions";
 
 const STATUS_COLORS: Record<string, string> = {
-  DRAFT: "bg-white/5 text-sand/60",
-  ORDERED: "bg-indigo/30 text-sand",
-  PARTIALLY_RECEIVED: "bg-rust/30 text-sand",
-  RECEIVED: "bg-green-900/30 text-green-400",
-  CANCELLED: "bg-white/5 text-sand/30",
+  DRAFT: "bg-cocoa/10 text-espresso/60",
+  ORDERED: "bg-cocoa/15 text-espresso",
+  PARTIALLY_RECEIVED: "bg-terracotta/15 text-terracotta",
+  RECEIVED: "bg-green-100 text-green-800",
+  CANCELLED: "bg-cocoa/10 text-espresso/40",
 };
 
 export default async function PurchaseOrderDetailPage({
@@ -31,10 +31,10 @@ export default async function PurchaseOrderDetailPage({
     <div>
       <div className="flex items-start justify-between">
         <div>
-          <h1 className="font-display text-3xl text-sand">
+          <h1 className="font-display text-3xl text-espresso">
             Purchase Order — {po.supplier.name}
           </h1>
-          <p className="mt-1 font-sans text-sand/50">
+          <p className="mt-1 font-sans text-espresso/50">
             Created by {po.createdBy.name} on {po.createdAt.toLocaleDateString()}
           </p>
         </div>
@@ -47,10 +47,10 @@ export default async function PurchaseOrderDetailPage({
         <PurchaseOrderStatusActions id={po.id} status={po.status} />
       </div>
 
-      <div className="mt-8 overflow-x-auto rounded-xl border border-white/10 bg-ink-soft">
+      <div className="mt-8 overflow-x-auto rounded-xl border border-cocoa/15 bg-cream">
         <table className="w-full font-sans text-left">
           <thead>
-            <tr className="border-b border-white/10 text-sm uppercase tracking-widest text-chrome">
+            <tr className="border-b border-cocoa/15 text-sm uppercase tracking-widest text-cocoa">
               <th className="px-5 py-3">Item</th>
               <th className="px-5 py-3">Unit cost (₦)</th>
               <th className="px-5 py-3">Ordered</th>
@@ -63,7 +63,7 @@ export default async function PurchaseOrderDetailPage({
               <ReceiveStockRow
                 key={item.id}
                 itemId={item.id}
-                productLabel={`${item.variant.product.name} — ${item.variant.size}/${item.variant.color}`}
+                productLabel={`${item.variant.product.name} — ${item.variant.size}${item.variant.color ? `/${item.variant.color}` : ""}`}
                 quantityOrdered={item.quantityOrdered}
                 quantityReceived={item.quantityReceived}
                 unitCost={item.unitCost}
@@ -74,8 +74,8 @@ export default async function PurchaseOrderDetailPage({
       </div>
 
       {po.notes && (
-        <p className="mt-6 font-sans text-sand/60">
-          <span className="text-chrome">Notes: </span>
+        <p className="mt-6 font-sans text-espresso/60">
+          <span className="text-cocoa">Notes: </span>
           {po.notes}
         </p>
       )}

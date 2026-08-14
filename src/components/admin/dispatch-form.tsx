@@ -43,9 +43,12 @@ export function DispatchForm({ orderId }: { orderId: string }) {
     router.refresh();
   }
 
+  const inputClass =
+    "rounded-lg border border-cocoa/25 bg-ivory px-3 py-2 text-espresso outline-none focus:border-terracotta";
+
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-      <label className="flex flex-col gap-1 font-sans text-sand/70">
+      <label className="flex flex-col gap-1 font-sans text-espresso/70">
         Delivery cost (₦)
         <input
           required
@@ -53,42 +56,42 @@ export function DispatchForm({ orderId }: { orderId: string }) {
           step="0.01"
           value={deliveryCost}
           onChange={(e) => setDeliveryCost(e.target.value)}
-          className="rounded-lg border border-white/15 bg-ink-elevated px-3 py-2 text-sand outline-none focus:border-coral"
+          className={inputClass}
         />
       </label>
-      <label className="flex flex-col gap-1 font-sans text-sand/70">
+      <label className="flex flex-col gap-1 font-sans text-espresso/70">
         Courier / rider name
         <input
           value={courierName}
           onChange={(e) => setCourierName(e.target.value)}
-          className="rounded-lg border border-white/15 bg-ink-elevated px-3 py-2 text-sand outline-none focus:border-coral"
+          className={inputClass}
         />
       </label>
-      <label className="flex flex-col gap-1 font-sans text-sand/70">
+      <label className="flex flex-col gap-1 font-sans text-espresso/70">
         Tracking info (optional)
         <input
           value={trackingInfo}
           onChange={(e) => setTrackingInfo(e.target.value)}
           placeholder="Tracking number or link"
-          className="rounded-lg border border-white/15 bg-ink-elevated px-3 py-2 text-sand outline-none focus:border-coral"
+          className={inputClass}
         />
       </label>
-      <label className="flex flex-col gap-1 font-sans text-sand/70">
+      <label className="flex flex-col gap-1 font-sans text-espresso/70">
         Note to customer (optional)
         <textarea
           rows={2}
           value={dispatchNotes}
           onChange={(e) => setDispatchNotes(e.target.value)}
-          className="rounded-lg border border-white/15 bg-ink-elevated px-3 py-2 text-sand outline-none focus:border-coral"
+          className={inputClass}
         />
       </label>
 
-      {error && <p className="font-sans text-sm text-coral">{error}</p>}
+      {error && <p className="font-sans text-sm text-red-700">{error}</p>}
 
       <button
         type="submit"
         disabled={saving}
-        className="mt-1 w-fit rounded-full bg-coral px-6 py-2 font-sans text-sand hover:scale-105 disabled:opacity-50"
+        className="mt-1 w-fit rounded-full bg-terracotta px-6 py-2 font-sans text-ivory hover:scale-105 disabled:opacity-50"
       >
         {saving ? "Dispatching…" : "Dispatch & notify customer"}
       </button>

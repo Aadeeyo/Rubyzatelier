@@ -76,20 +76,23 @@ export function PurchaseOrderForm({
 
   if (suppliers.length === 0) {
     return (
-      <p className="font-sans text-sand/60">
+      <p className="font-sans text-espresso/60">
         Add a supplier first before creating a purchase order.
       </p>
     );
   }
 
+  const inputClass =
+    "rounded-lg border border-cocoa/25 bg-ivory px-4 py-2 text-espresso outline-none focus:border-terracotta";
+
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-5 max-w-2xl">
-      <label className="flex flex-col gap-1 font-sans text-sand/70">
+      <label className="flex flex-col gap-1 font-sans text-espresso/70">
         Supplier
         <select
           value={supplierId}
           onChange={(e) => setSupplierId(e.target.value)}
-          className="rounded-lg border border-white/15 bg-ink-elevated px-4 py-2 text-sand outline-none focus:border-coral"
+          className={inputClass}
         >
           {suppliers.map((s) => (
             <option key={s.id} value={s.id}>
@@ -99,19 +102,19 @@ export function PurchaseOrderForm({
         </select>
       </label>
 
-      <label className="flex flex-col gap-1 font-sans text-sand/70">
+      <label className="flex flex-col gap-1 font-sans text-espresso/70">
         Expected date (optional)
         <input
           type="date"
           value={expectedAt}
           onChange={(e) => setExpectedAt(e.target.value)}
-          className="rounded-lg border border-white/15 bg-ink-elevated px-4 py-2 text-sand outline-none focus:border-coral"
+          className={inputClass}
         />
       </label>
 
       <div>
         <div className="flex items-center justify-between">
-          <span className="font-sans text-sand/70">Items</span>
+          <span className="font-sans text-espresso/70">Items</span>
           <button
             type="button"
             onClick={() =>
@@ -120,7 +123,7 @@ export function PurchaseOrderForm({
                 { variantId: variants[0]?.id ?? "", quantityOrdered: "1", unitCost: "" },
               ])
             }
-            className="font-sans text-sm text-chrome hover:text-coral"
+            className="font-sans text-sm text-cocoa hover:text-terracotta"
           >
             + Add item
           </button>
@@ -132,7 +135,7 @@ export function PurchaseOrderForm({
               <select
                 value={row.variantId}
                 onChange={(e) => updateItem(i, { variantId: e.target.value })}
-                className="rounded-lg border border-white/15 bg-ink-elevated px-3 py-2 text-sand outline-none focus:border-coral"
+                className={inputClass}
               >
                 {variants.map((v) => (
                   <option key={v.id} value={v.id}>
@@ -145,7 +148,7 @@ export function PurchaseOrderForm({
                 placeholder="Quantity"
                 value={row.quantityOrdered}
                 onChange={(e) => updateItem(i, { quantityOrdered: e.target.value })}
-                className="rounded-lg border border-white/15 bg-ink-elevated px-3 py-2 text-sand outline-none focus:border-coral"
+                className={inputClass}
               />
               <input
                 type="number"
@@ -153,13 +156,13 @@ export function PurchaseOrderForm({
                 placeholder="Unit cost (₦)"
                 value={row.unitCost}
                 onChange={(e) => updateItem(i, { unitCost: e.target.value })}
-                className="rounded-lg border border-white/15 bg-ink-elevated px-3 py-2 text-sand outline-none focus:border-coral"
+                className={inputClass}
               />
               <button
                 type="button"
                 onClick={() => removeItem(i)}
                 disabled={items.length === 1}
-                className="font-sans text-sm text-sand/40 hover:text-coral disabled:opacity-20"
+                className="font-sans text-sm text-espresso/40 hover:text-terracotta disabled:opacity-20"
               >
                 Remove
               </button>
@@ -168,22 +171,22 @@ export function PurchaseOrderForm({
         </div>
       </div>
 
-      <label className="flex flex-col gap-1 font-sans text-sand/70">
+      <label className="flex flex-col gap-1 font-sans text-espresso/70">
         Notes
         <textarea
           rows={3}
           value={notes}
           onChange={(e) => setNotes(e.target.value)}
-          className="rounded-lg border border-white/15 bg-ink-elevated px-4 py-2 text-sand outline-none focus:border-coral"
+          className={inputClass}
         />
       </label>
 
-      {error && <p className="font-sans text-coral">{error}</p>}
+      {error && <p className="font-sans text-red-700">{error}</p>}
 
       <button
         type="submit"
         disabled={saving}
-        className="w-fit rounded-full bg-coral px-8 py-3 font-sans text-lg text-sand hover:scale-105 disabled:opacity-50"
+        className="w-fit rounded-full bg-terracotta px-8 py-3 font-sans text-lg text-ivory hover:scale-105 disabled:opacity-50"
       >
         {saving ? "Creating…" : "Create purchase order"}
       </button>

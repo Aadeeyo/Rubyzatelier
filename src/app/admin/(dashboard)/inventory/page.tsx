@@ -10,19 +10,19 @@ export default async function AdminInventoryPage() {
 
   return (
     <div>
-      <h1 className="font-display text-3xl text-sand">Inventory</h1>
-      <p className="mt-2 font-sans text-sand/60">
+      <h1 className="font-display text-3xl text-espresso">Inventory</h1>
+      <p className="mt-2 font-sans text-espresso/60">
         Adjust stock levels directly, or receive stock through a{" "}
-        <Link href="/admin/procurement" className="text-chrome hover:text-coral">
+        <Link href="/admin/procurement" className="text-cocoa hover:text-terracotta">
           purchase order
         </Link>
         .
       </p>
 
-      <div className="mt-8 overflow-x-auto rounded-xl border border-white/10 bg-ink-soft">
+      <div className="mt-8 overflow-x-auto rounded-xl border border-cocoa/15 bg-cream">
         <table className="w-full font-sans text-left">
           <thead>
-            <tr className="border-b border-white/10 text-sm uppercase tracking-widest text-chrome">
+            <tr className="border-b border-cocoa/15 text-sm uppercase tracking-widest text-cocoa">
               <th className="px-5 py-3">Product</th>
               <th className="px-5 py-3">Variant</th>
               <th className="px-5 py-3">SKU</th>
@@ -48,7 +48,7 @@ export default async function AdminInventoryPage() {
           </tbody>
         </table>
         {inventory.length === 0 && (
-          <p className="p-6 font-sans text-sand/50">No inventory yet.</p>
+          <p className="p-6 font-sans text-espresso/50">No inventory yet.</p>
         )}
       </div>
     </div>
