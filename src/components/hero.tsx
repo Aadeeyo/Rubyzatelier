@@ -44,13 +44,19 @@ export function Hero() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.7, delay: 0.35 }}
-        className="relative mt-10"
+        className="relative mt-10 flex flex-col gap-4 sm:flex-row"
       >
         <Link
           href="/shop"
           className="rounded-full bg-terracotta px-8 py-3 font-sans text-lg text-ivory transition-transform hover:scale-105"
         >
-          Shop the Collection
+          Explore the Collections
+        </Link>
+        <Link
+          href="/about"
+          className="rounded-full border border-cream/40 px-8 py-3 font-sans text-lg text-cream transition-colors hover:border-terracotta hover:text-terracotta"
+        >
+          Read Our Story
         </Link>
       </motion.div>
     </section>

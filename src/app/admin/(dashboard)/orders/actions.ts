@@ -7,6 +7,7 @@ import { requireAdminSession } from "@/lib/auth";
 import { friendlyActionError } from "@/lib/errors";
 import { revalidateStorefront } from "@/lib/revalidate";
 import { sendDispatchEmail, sendPaymentConfirmedEmail, sendReadyForPickupEmail } from "@/lib/email";
+import { handleNewPurchase } from "@/lib/customer-lifecycle";
 
 const statuses = [
   "PENDING_PAYMENT",
@@ -74,6 +75,10 @@ export async function updateOrderStatus(input: z.infer<typeof schema>) {
         })),
         total: order.total,
       });
+    }
+
+    if (isNewlyPaid && order.customerId) {
+      await handleNewPurchase(order.customerId);
     }
 
     revalidatePath(`/admin/orders/${order.id}`);

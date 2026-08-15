@@ -160,6 +160,15 @@ model Customer {
   orders       Order[]
   addresses    Address[]
   createdAt    DateTime  @default(now())
+
+  // Lifecycle email dedup tracking - each stamped the first (and only) time
+  // its email is sent, so automations never repeat themselves.
+  repeatCustomerEmailSentAt DateTime?
+  milestone5EmailSentAt     DateTime?
+  milestone10EmailSentAt    DateTime?
+  milestone20EmailSentAt    DateTime?
+  lastCheckInEmailSentAt    DateTime?
+  unsubscribedAt            DateTime?
 }
 
 model Address {
@@ -232,7 +241,8 @@ model Journal {
 }
 
 model NewsletterSubscriber {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  createdAt DateTime @default(now())
+  id             String    @id @default(cuid())
+  email          String    @unique
+  createdAt      DateTime  @default(now())
+  unsubscribedAt DateTime?
 }

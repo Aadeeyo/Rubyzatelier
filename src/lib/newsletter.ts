@@ -4,6 +4,7 @@ import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { syncContactToBrevo } from "@/lib/brevo";
 import { friendlyActionError } from "@/lib/errors";
+import { sendWelcomeEmail } from "@/lib/email";
 
 const subscribeSchema = z.object({
   email: z.string().email(),
@@ -20,14 +21,18 @@ export async function subscribeToNewsletter(
   try {
     const { email } = subscribeSchema.parse(input);
 
+    const existing = await prisma.newsletterSubscriber.findUnique({ where: { email } });
     await prisma.newsletterSubscriber.upsert({
       where: { email },
       update: {},
       create: { email },
     });
 
-    // Best-effort - never blocks the signup if Brevo is unavailable.
+    // Best-effort - never blocks the signup if Brevo or Resend is unavailable.
     await syncContactToBrevo(email);
+    if (!existing) {
+      await sendWelcomeEmail({ to: email });
+    }
 
     return { ok: true };
   } catch (err) {

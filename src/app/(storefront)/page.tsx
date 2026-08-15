@@ -15,8 +15,8 @@ export default async function HomePage() {
   return (
     <div className="flex flex-col">
       <Hero />
-      <CollectionTiles />
       <OurStoryExcerpt />
+      <CollectionTiles />
 
       <section className="mx-auto w-full max-w-7xl px-5 py-20 sm:px-8">
         <div className="mb-10 flex items-end justify-between">

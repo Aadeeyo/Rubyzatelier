@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { formatNaira } from "@/lib/utils";
 import { BANK_TRANSFER } from "@/lib/site";
+import { CopyableField } from "@/components/copyable-field";
 
 export default async function OrderConfirmationPage({
   params,
@@ -36,17 +37,21 @@ export default async function OrderConfirmationPage({
 
       <div className="mt-8 rounded-xl border border-terracotta/30 bg-terracotta/5 p-6">
         <h2 className="font-display text-xl text-espresso">Pay via bank transfer</h2>
-        <dl className="mt-4 grid grid-cols-2 gap-y-2 font-sans text-base">
+        <dl className="mt-4 grid grid-cols-1 gap-y-3 font-sans text-base sm:grid-cols-2 sm:gap-y-2">
           <dt className="text-espresso/50">Bank</dt>
           <dd className="text-espresso">{BANK_TRANSFER.bankName}</dd>
           <dt className="text-espresso/50">Account name</dt>
           <dd className="text-espresso">{BANK_TRANSFER.accountName}</dd>
           <dt className="text-espresso/50">Account number</dt>
-          <dd className="tracking-widest text-espresso">{BANK_TRANSFER.accountNumber}</dd>
+          <dd className="text-espresso">
+            <CopyableField value={BANK_TRANSFER.accountNumber} className="tracking-widest" />
+          </dd>
           <dt className="text-espresso/50">Amount</dt>
           <dd className="text-espresso">{formatNaira(order.total)}</dd>
           <dt className="text-espresso/50">Reference</dt>
-          <dd className="text-espresso">{order.paymentRef}</dd>
+          <dd className="text-espresso">
+            {order.paymentRef ? <CopyableField value={order.paymentRef} /> : "—"}
+          </dd>
         </dl>
         <p className="mt-4 font-sans text-sm text-espresso/50">
           Transfer the exact amount to the account above, using{" "}

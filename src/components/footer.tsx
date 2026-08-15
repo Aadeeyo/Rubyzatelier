@@ -1,5 +1,8 @@
 import Link from "next/link";
 import { Logo } from "@/components/logo";
+import { InstagramIcon, TikTokIcon } from "@/components/icons";
+
+const SOCIAL_HANDLE = "@shoprubzatelier";
 
 export function Footer() {
   return (
@@ -11,6 +14,26 @@ export function Footer() {
             Affordable, elegant fashion for every moment — office, worship,
             dates, and celebration.
           </p>
+          <div className="mt-1 flex items-center gap-4">
+            <a
+              href="https://instagram.com/shoprubzatelier"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={`Instagram ${SOCIAL_HANDLE}`}
+              className="text-espresso/60 transition-colors hover:text-terracotta"
+            >
+              <InstagramIcon size={20} />
+            </a>
+            <a
+              href="https://www.tiktok.com/@shoprubzatelier"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={`TikTok ${SOCIAL_HANDLE}`}
+              className="text-espresso/60 transition-colors hover:text-terracotta"
+            >
+              <TikTokIcon size={20} />
+            </a>
+          </div>
         </div>
 
         <div className="flex flex-wrap gap-10 sm:gap-16">
