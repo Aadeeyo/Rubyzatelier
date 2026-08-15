@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 
 export function Hero() {
   return (
-    <section className="relative flex min-h-[85vh] flex-col items-center justify-center overflow-hidden bg-charcoal px-5 text-center">
+    <section className="relative flex min-h-[85vh] flex-col items-center justify-center overflow-hidden bg-charcoal px-5 pt-10 text-center">
       <div className="pointer-events-none absolute inset-0 bg-deep-espresso/60">
         <div className="absolute -left-32 -top-32 h-96 w-96 rounded-full bg-terracotta/25 blur-3xl" />
         <div className="absolute -right-24 top-1/3 h-80 w-80 rounded-full bg-cocoa/20 blur-3xl" />
@@ -27,8 +27,8 @@ export function Hero() {
         transition={{ duration: 0.7, delay: 0.15 }}
         className="relative mt-6 max-w-xl font-sans text-lg text-cream/70"
       >
-        Clean, functional, affordable fashion curated for women moving
-        effortlessly between work, worship, relationships, and celebration.
+        Elegant, affordable fashion curated for work, worship, relationships,
+        and every moment that matters.
       </motion.p>
 
       <motion.p

@@ -3,9 +3,9 @@ export const SITE_URL = "https://ruby.com.ng";
 export const SITE_NAME = "Rubyzatelier";
 
 export const SITE_DESCRIPTION =
-  "Rubyzatelier — bringing elegant fashion closer to home. Affordable, clean, functional fashion for women, curated by moment: Office, Sunday, Date and Celebration. Based in Ogijo, Ogun State, serving Ogijo, Itaoluwo, Lukosi and beyond.";
+  "Elegant, affordable fashion curated for women moving effortlessly between work, worship, relationships, and celebration.";
 
-export const TAGLINE = "Bringing elegant fashion closer to home.";
+export const TAGLINE = "Bringing Elegant Fashion Closer to Home";
 
 // Local areas served, used for local SEO copy and structured data.
 export const SERVICE_AREAS = ["Ogijo", "Itaoluwo", "Lukosi"];

@@ -17,7 +17,7 @@ export async function generateMetadata({
   const copy = COLLECTION_COPY[collection];
   return {
     title: copy.label,
-    description: `${copy.description} Shop the ${copy.label} from Rubyzatelier — based in Ogijo, Ogun State, delivering to Ogijo, Itaoluwo, Lukosi and beyond.`,
+    description: copy.metaDescription,
     alternates: { canonical: `/shop/${collectionParam}` },
   };
 }
@@ -42,8 +42,10 @@ export default async function CollectionShopPage({
   return (
     <div className="mx-auto w-full max-w-7xl px-5 py-14 sm:px-8">
       <h1 className="font-display text-4xl text-espresso sm:text-5xl">{copy.label}</h1>
-      <p className="mt-2 max-w-xl font-sans text-lg text-espresso/60">{copy.description}</p>
-      <p className="mt-1 font-sans text-base text-espresso/50">
+      <p className="mt-4 max-w-2xl font-sans text-lg leading-relaxed text-espresso/70">
+        {copy.introParagraph}
+      </p>
+      <p className="mt-3 font-sans text-base text-espresso/50">
         {products.length} piece{products.length === 1 ? "" : "s"} available
       </p>
 

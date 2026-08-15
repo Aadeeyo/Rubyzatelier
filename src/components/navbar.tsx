@@ -9,10 +9,10 @@ import { SearchBar } from "@/components/search-bar";
 import { useCartStore, cartCount } from "@/lib/cart-store";
 
 const EDIT_LINKS = [
-  { href: "/shop/office", label: "Office Edit" },
-  { href: "/shop/sunday", label: "Sunday Edit" },
-  { href: "/shop/date", label: "Date Edit" },
-  { href: "/shop/celebration", label: "Celebration Edit" },
+  { href: "/shop/office-edit", label: "Office Edit" },
+  { href: "/shop/sunday-edit", label: "Sunday Edit" },
+  { href: "/shop/date-edit", label: "Date Edit" },
+  { href: "/shop/celebration-edit", label: "Celebration Edit" },
 ];
 
 const INFO_LINKS = [

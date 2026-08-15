@@ -41,16 +41,16 @@ export function Footer() {
             <span className="font-sans text-sm uppercase tracking-[0.2em] text-cocoa">
               Shop
             </span>
-            <Link href="/shop/office" className="text-espresso/70 hover:text-terracotta">
+            <Link href="/shop/office-edit" className="text-espresso/70 hover:text-terracotta">
               Office Edit
             </Link>
-            <Link href="/shop/sunday" className="text-espresso/70 hover:text-terracotta">
+            <Link href="/shop/sunday-edit" className="text-espresso/70 hover:text-terracotta">
               Sunday Edit
             </Link>
-            <Link href="/shop/date" className="text-espresso/70 hover:text-terracotta">
+            <Link href="/shop/date-edit" className="text-espresso/70 hover:text-terracotta">
               Date Edit
             </Link>
-            <Link href="/shop/celebration" className="text-espresso/70 hover:text-terracotta">
+            <Link href="/shop/celebration-edit" className="text-espresso/70 hover:text-terracotta">
               Celebration Edit
             </Link>
           </div>
