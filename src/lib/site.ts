@@ -1,4 +1,4 @@
-export const SITE_URL = "https://rubyzatelier.netlify.app";
+export const SITE_URL = "https://ruby.com.ng";
 
 export const SITE_NAME = "Rubyzatelier";
 
