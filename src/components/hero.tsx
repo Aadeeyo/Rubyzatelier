@@ -53,7 +53,7 @@ export function Hero() {
           Explore the Collections
         </Link>
         <Link
-          href="/about"
+          href="/our-story"
           className="rounded-full border border-cream/40 px-8 py-3 font-sans text-lg text-cream transition-colors hover:border-terracotta hover:text-terracotta"
         >
           Read Our Story

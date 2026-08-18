@@ -16,7 +16,7 @@ const EDIT_LINKS = [
 ];
 
 const INFO_LINKS = [
-  { href: "/about", label: "Our Story" },
+  { href: "/our-story", label: "Our Story" },
   { href: "/journal", label: "Journal" },
   { href: "/contact", label: "Contact" },
 ];
@@ -41,7 +41,7 @@ export function Navbar() {
 
         <Logo className="sm:items-start" tagline={false} />
 
-        <nav className="hidden items-center gap-6 sm:flex lg:gap-8">
+        <nav className="ml-3 hidden items-center gap-6 sm:flex lg:gap-8">
           {EDIT_LINKS.map((link) => (
             <Link
               key={link.href}

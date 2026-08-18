@@ -58,7 +58,7 @@ export function Footer() {
             <span className="font-sans text-sm uppercase tracking-[0.2em] text-cocoa">
               Rubyzatelier
             </span>
-            <Link href="/about" className="text-espresso/70 hover:text-terracotta">
+            <Link href="/our-story" className="text-espresso/70 hover:text-terracotta">
               Our Story
             </Link>
             <Link href="/journal" className="text-espresso/70 hover:text-terracotta">

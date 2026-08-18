@@ -4,10 +4,10 @@ export const metadata: Metadata = {
   title: "Our Story",
   description:
     "Twenty years of searching inspired one destination. The story of why Rubyzatelier exists — based in Ogijo, Ogun State.",
-  alternates: { canonical: "/about" },
+  alternates: { canonical: "/our-story" },
 };
 
-export default function AboutPage() {
+export default function OurStoryPage() {
   return (
     <div className="mx-auto w-full max-w-3xl px-5 py-20 sm:px-8">
       <p className="font-sans text-sm uppercase tracking-[0.4em] text-terracotta">

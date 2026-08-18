@@ -11,7 +11,7 @@ export function Logo({
 }) {
   return (
     <Link href="/" className={cn("group inline-flex flex-col items-center", className)}>
-      <LogoMark className="h-[2.65rem] w-auto sm:h-[3.25rem]" />
+      <LogoMark className="h-[2.45rem] w-auto sm:h-[3rem]" />
       <span className="mt-1 font-script text-terracotta text-[2.65rem] leading-none tracking-wide sm:text-[3.5rem]">
         Rubyzatelier
       </span>

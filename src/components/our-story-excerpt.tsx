@@ -11,7 +11,7 @@ export function OurStoryExcerpt() {
         <p>Rubyzatelier exists to change that.</p>
       </div>
       <Link
-        href="/about"
+        href="/our-story"
         className="mt-8 inline-block font-sans text-lg font-semibold text-terracotta hover:underline"
       >
         Read Our Story →
