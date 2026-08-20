@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getProducts } from "@/lib/catalog";
 import { ProductCard } from "@/components/product-card";
 import { SortBar } from "@/components/sort-bar";
+import { EmptyState } from "@/components/empty-state";
 
 export const metadata: Metadata = {
   title: "Shop All Pieces",
@@ -29,9 +30,7 @@ export default async function ShopAllPage({
       <SortBar basePath="/shop" activeSort={sort} />
 
       {products.length === 0 ? (
-        <p className="mt-16 font-sans text-lg text-espresso/50">
-          Nothing here yet — check back soon.
-        </p>
+        <EmptyState />
       ) : (
         <div className="mt-10 grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-4">
           {products.map((product) => (

@@ -111,7 +111,7 @@ export function JournalForm({
           return;
         }
         toast.success("Changes saved");
-        router.refresh();
+        router.push("/admin/journal");
       }
     } catch (err) {
       const message = err instanceof Error ? err.message : "Something went wrong";

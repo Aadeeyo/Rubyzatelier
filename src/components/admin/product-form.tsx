@@ -192,8 +192,7 @@ export function ProductForm({
         }
 
         toast.success("Changes saved");
-        router.refresh();
-        setVariants([]);
+        router.push("/admin/products");
       }
     } catch (err) {
       const message = err instanceof Error ? err.message : "Something went wrong";

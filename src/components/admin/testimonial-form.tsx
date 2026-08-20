@@ -90,7 +90,7 @@ export function TestimonialForm({
           return;
         }
         toast.success("Changes saved");
-        router.refresh();
+        router.push("/admin/testimonials");
       }
     } catch (err) {
       const message = err instanceof Error ? err.message : "Something went wrong";

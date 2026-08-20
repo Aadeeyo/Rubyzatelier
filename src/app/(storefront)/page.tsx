@@ -8,6 +8,7 @@ import { Testimonials } from "@/components/testimonials";
 import { BrandValues } from "@/components/brand-values";
 import { JournalPreview } from "@/components/journal-preview";
 import { NewsletterSignup } from "@/components/newsletter-signup";
+import { EmptyState } from "@/components/empty-state";
 
 export default async function HomePage() {
   const featured = await getFeaturedProducts(8);
@@ -32,9 +33,7 @@ export default async function HomePage() {
         </div>
 
         {featured.length === 0 ? (
-          <p className="font-sans text-lg text-espresso/60">
-            No pieces published yet — add products from the admin dashboard.
-          </p>
+          <EmptyState />
         ) : (
           <div className="grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-4">
             {featured.map((product) => (

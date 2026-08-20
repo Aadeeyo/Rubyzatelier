@@ -3,6 +3,7 @@ import Link from "next/link";
 import { getPublishedJournalEntries } from "@/lib/journal";
 import { COLLECTION_COPY } from "@/lib/collections";
 import { LogoMark } from "@/components/logo-mark";
+import { EmptyState } from "@/components/empty-state";
 import type { Collection } from "@/generated/prisma/enums";
 
 export const metadata: Metadata = {
@@ -52,9 +53,7 @@ export default async function JournalIndexPage() {
       </p>
 
       {!featured ? (
-        <p className="mt-16 font-sans text-lg text-espresso/50">
-          Nothing published yet — check back soon.
-        </p>
+        <EmptyState title="We are writing our first stories." />
       ) : (
         <div className="mt-12">
           <Link
