@@ -44,6 +44,10 @@ export function ProductForm({
     imageUrl: string;
     status: ProductStatus;
     isFeatured: boolean;
+    details: string;
+    fabric: string;
+    careInstructions: string;
+    howToWear: string;
   };
   existingVariants?: { id: string; size: string; color: string | null; sku: string; quantity: number }[];
 }) {
@@ -64,6 +68,10 @@ export function ProductForm({
     initial?.status === "DRAFT" ? "DRAFT" : "AVAILABLE",
   );
   const [isFeatured, setIsFeatured] = useState(initial?.isFeatured ?? false);
+  const [details, setDetails] = useState(initial?.details ?? "");
+  const [fabric, setFabric] = useState(initial?.fabric ?? "");
+  const [careInstructions, setCareInstructions] = useState(initial?.careInstructions ?? "");
+  const [howToWear, setHowToWear] = useState(initial?.howToWear ?? "");
   const [variants, setVariants] = useState<VariantRow[]>(
     mode === "create"
       ? [{ size: "", color: "", sku: "", priceOverride: "", quantity: "0" }]
@@ -133,6 +141,13 @@ export function ProductForm({
       imageUrl,
       status,
       isFeatured,
+      details: details
+        .split("\n")
+        .map((line) => line.trim())
+        .filter(Boolean),
+      fabric: fabric || undefined,
+      careInstructions: careInstructions || undefined,
+      howToWear: howToWear || undefined,
     };
 
     try {
@@ -306,6 +321,47 @@ export function ProductForm({
         <input type="checkbox" checked={isFeatured} onChange={(e) => setIsFeatured(e.target.checked)} />
         Featured on homepage
       </label>
+
+      <div className="rounded-xl border border-cocoa/15 p-5">
+        <p className="font-sans text-espresso/70">
+          Product page details <span className="text-espresso/40">(optional — fill in as you go)</span>
+        </p>
+
+        <label className="mt-4 flex flex-col gap-1 font-sans text-sm text-espresso/70">
+          Details (one per line, e.g. &ldquo;Midi length&rdquo;)
+          <textarea
+            rows={3}
+            value={details}
+            onChange={(e) => setDetails(e.target.value)}
+            className={inputClass}
+          />
+        </label>
+
+        <label className="mt-4 flex flex-col gap-1 font-sans text-sm text-espresso/70">
+          Fabric
+          <input value={fabric} onChange={(e) => setFabric(e.target.value)} className={inputClass} />
+        </label>
+
+        <label className="mt-4 flex flex-col gap-1 font-sans text-sm text-espresso/70">
+          Care instructions
+          <textarea
+            rows={2}
+            value={careInstructions}
+            onChange={(e) => setCareInstructions(e.target.value)}
+            className={inputClass}
+          />
+        </label>
+
+        <label className="mt-4 flex flex-col gap-1 font-sans text-sm text-espresso/70">
+          How to wear it
+          <textarea
+            rows={3}
+            value={howToWear}
+            onChange={(e) => setHowToWear(e.target.value)}
+            className={inputClass}
+          />
+        </label>
+      </div>
 
       {existingVariants.length > 0 && (
         <div>

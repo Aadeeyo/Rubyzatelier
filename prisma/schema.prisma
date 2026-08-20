@@ -30,6 +30,11 @@ enum JournalStatus {
   PUBLISHED
 }
 
+enum TestimonialStatus {
+  DRAFT
+  PUBLISHED
+}
+
 enum OrderStatus {
   PENDING_PAYMENT
   PAID
@@ -78,6 +83,13 @@ model Product {
   isFeatured  Boolean          @default(false)
   createdAt   DateTime         @default(now())
   updatedAt   DateTime         @updatedAt
+
+  // Optional editorial content shown below the fold on the product page -
+  // admins fill these in progressively, sections are hidden when empty.
+  details          String[] @default([])
+  fabric           String?
+  careInstructions String?
+  howToWear        String?
 }
 
 model ProductImage {
@@ -245,4 +257,15 @@ model NewsletterSubscriber {
   email          String    @unique
   createdAt      DateTime  @default(now())
   unsubscribedAt DateTime?
+}
+
+model Testimonial {
+  id           String            @id @default(cuid())
+  customerName String
+  quote        String
+  rating       Int?
+  photoUrl     String?
+  status       TestimonialStatus @default(DRAFT)
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
 }

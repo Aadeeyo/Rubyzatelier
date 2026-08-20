@@ -4,6 +4,7 @@ import { getProducts } from "@/lib/catalog";
 import { ProductCard } from "@/components/product-card";
 import { SortBar } from "@/components/sort-bar";
 import { COLLECTION_SLUGS, COLLECTION_COPY } from "@/lib/collections";
+import { EmptyCollectionState } from "@/components/empty-collection-state";
 
 export async function generateMetadata({
   params,
@@ -52,9 +53,7 @@ export default async function CollectionShopPage({
       <SortBar basePath={`/shop/${collectionParam}`} activeSort={sort} />
 
       {products.length === 0 ? (
-        <p className="mt-16 font-sans text-lg text-espresso/50">
-          Nothing here yet — check back soon.
-        </p>
+        <EmptyCollectionState />
       ) : (
         <div className="mt-10 grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-4">
           {products.map((product) => (

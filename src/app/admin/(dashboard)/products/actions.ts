@@ -53,6 +53,10 @@ const productSchema = z.object({
   imageUrl: z.string().min(1),
   status: z.enum(["DRAFT", "AVAILABLE"]),
   isFeatured: z.boolean(),
+  details: z.array(z.string()).default([]),
+  fabric: z.string().optional(),
+  careInstructions: z.string().optional(),
+  howToWear: z.string().optional(),
   variants: z.array(variantSchema).min(1, "at least one variant is required"),
 });
 
@@ -85,6 +89,10 @@ export async function createProduct(input: ProductInput) {
         basePrice: data.basePrice,
         status: data.status,
         isFeatured: data.isFeatured,
+        details: data.details,
+        fabric: data.fabric || null,
+        careInstructions: data.careInstructions || null,
+        howToWear: data.howToWear || null,
         images: { create: [{ url: data.imageUrl, position: 0 }] },
         variants: {
           create: data.variants.map((v) => ({
@@ -140,6 +148,10 @@ export async function updateProductCore(
         basePrice: data.basePrice,
         status: data.status,
         isFeatured: data.isFeatured,
+        details: data.details,
+        fabric: data.fabric || null,
+        careInstructions: data.careInstructions || null,
+        howToWear: data.howToWear || null,
         images: {
           deleteMany: {},
           create: [{ url: data.imageUrl, position: 0 }],

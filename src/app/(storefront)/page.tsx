@@ -4,7 +4,7 @@ import { ProductCard } from "@/components/product-card";
 import { Hero } from "@/components/hero";
 import { CollectionTiles } from "@/components/collection-tiles";
 import { OurStoryExcerpt } from "@/components/our-story-excerpt";
-import { TestimonialsPlaceholder } from "@/components/testimonials-placeholder";
+import { Testimonials } from "@/components/testimonials";
 import { BrandValues } from "@/components/brand-values";
 import { JournalPreview } from "@/components/journal-preview";
 import { NewsletterSignup } from "@/components/newsletter-signup";
@@ -44,7 +44,7 @@ export default async function HomePage() {
         )}
       </section>
 
-      <TestimonialsPlaceholder />
+      <Testimonials />
       <BrandValues />
       <JournalPreview />
       <NewsletterSignup />

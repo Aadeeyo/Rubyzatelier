@@ -30,6 +30,10 @@ export default async function EditProductPage({
             imageUrl: product.images[0]?.url ?? "/products/placeholder-1.svg",
             status: product.status,
             isFeatured: product.isFeatured,
+            details: product.details.join("\n"),
+            fabric: product.fabric ?? "",
+            careInstructions: product.careInstructions ?? "",
+            howToWear: product.howToWear ?? "",
           }}
           existingVariants={product.variants.map((v) => ({
             id: v.id,
